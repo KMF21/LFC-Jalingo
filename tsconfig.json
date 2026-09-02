@@ -23,6 +23,9 @@
         "./*"
       ]
     },
+    "types": [
+      "node"
+    ],
     "plugins": [
       {
         "name": "next"
@@ -37,7 +40,6 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "sanity"
+    "node_modules"
   ]
 }

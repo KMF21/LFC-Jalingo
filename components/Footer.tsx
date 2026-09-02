@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FlameMark from "./FlameMark";
 import Reveal from "./Reveal";
+import Image from "next/image";
 
 const quickLinks = [
   { href: "/sermons", label: "Sermons" },
@@ -25,7 +26,13 @@ export default function Footer() {
       <div className="container-content grid grid-cols-1 gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-4">
         <Reveal>
           <div className="flex items-center gap-2">
-            <FlameMark size={26} />
+            <Image
+                       src="/images/lflogo.png"
+                       alt="LFC Jalingo logo"
+                       width={26}
+                       height={26}
+                       className="rounded-full"
+                     />
             <span className="font-display text-sm font-semibold text-paper">
               Living Faith Church, Jalingo
             </span>

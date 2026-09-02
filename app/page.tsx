@@ -19,7 +19,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Welcome to Living Faith",
     accentWord: "Church, Jalingo",
     subtitle: "New Ground, Mile Six Bypass Road, Dinyavoh",
-    imageUrl: "/images/pastor-preaching.jpg",
+    imageUrl: "/images/lfchurch.jpg",
     ctaLabel: "Plan your visit",
     ctaHref: "/visit",
   },
