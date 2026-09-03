@@ -3,7 +3,10 @@ import Reveal from "@/components/Reveal";
 import Image from "next/image";
 import { MINISTRY_BY_SLUG_QUERY, sanityClient } from "@/lib/sanity";
 
-type Props = { params: { slug: string } };
+// 1. Update Props to accept params as a Promise (Next.js 15+)
+type Props = { 
+  params: Promise<{ slug: string }>;
+};
 
 type MinistryDetail = {
   name: string;
@@ -17,14 +20,20 @@ const fallbackMinistry: MinistryDetail = {
   name: "Youth Alive Fellowship",
   description:
     "Youth Alive exists to empower young people in faith, purpose, and community — through weekly fellowship, outreach, and mentorship.",
-  imageUrl: "/images/youth-alive.jpg",
+  imageUrl: "/images/ministries/youth-alive.jpg",
   galleryUrls: [],
   whatsappGroupLink: undefined,
 };
 
 async function getMinistry(slug: string): Promise<MinistryDetail> {
+  // Guard against missing slug values
+  if (!slug) return fallbackMinistry;
+
   try {
-    const data = await sanityClient.fetch<MinistryDetail | null>(MINISTRY_BY_SLUG_QUERY, { slug });
+    const data = await sanityClient.fetch<MinistryDetail | null>(
+      MINISTRY_BY_SLUG_QUERY, 
+      { slug }
+    );
     return data ?? fallbackMinistry;
   } catch (err) {
     console.error("Sanity fetch failed, using fallback content:", err);
@@ -33,8 +42,13 @@ async function getMinistry(slug: string): Promise<MinistryDetail> {
 }
 
 export default async function MinistryDetailPage({ params }: Props) {
-  const ministry = await getMinistry(params.slug);
-  const gallery = ministry.galleryUrls && ministry.galleryUrls.length > 0 ? ministry.galleryUrls : [null, null, null];
+  // 2. Await the params Promise before extracting slug
+  const resolvedParams = await params;
+  const ministry = await getMinistry(resolvedParams.slug);
+  
+  const gallery = ministry.galleryUrls && ministry.galleryUrls.length > 0 
+    ? ministry.galleryUrls 
+    : [null, null, null];
 
   return (
     <main>

@@ -1,8 +1,8 @@
 "use client";
 
-import { NextStudio } from "next-sanity/studio";
+import { Studio as SanityStudio } from "sanity";
 import config from "../../../sanity.config";
 
 export function Studio() {
-  return <NextStudio config={config} />;
+  return <SanityStudio config={config} />;
 }
