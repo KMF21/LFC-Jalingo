@@ -64,7 +64,7 @@ export default async function AboutPage() {
         description="Living Faith Church, Jalingo is a vibrant community committed to helping you and your family grow closer to your God-given purpose."
       />
 
-      <section className="container-content -mt-8 pb-4">
+      <section className="container-content mt-1 pb-4">
         <Reveal>
           <div className="grid grid-cols-3 gap-3">
             {anchorNav.map((a) => (
