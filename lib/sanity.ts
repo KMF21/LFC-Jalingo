@@ -97,6 +97,25 @@ export const LEADERS_QUERY = `*[_type == "leader"] | order(order asc){
   bio
 }`;
 
+// Deliberately separate from LEADERS_QUERY: this only returns something
+// when a real, pastor-approved welcomeMessage exists. It explicitly
+// excludes the bracketed placeholder seeded by scripts/seed.mjs too —
+// not just empty/undefined — because this project has no draft/publish
+// separation: whatever's in the dataset is exactly what the live site
+// shows. PastorWelcome.tsx renders nothing at all until this query
+// returns a real result. See sanity/schemas/leader.ts for why.
+export const PASTOR_WELCOME_QUERY = `*[
+  _type == "leader"
+  && defined(welcomeMessage)
+  && welcomeMessage != ""
+  && !(welcomeMessage match "[PLACEHOLDER*")
+] | order(order asc)[0]{
+  name,
+  role,
+  "photoUrl": photo.asset->url,
+  welcomeMessage
+}`;
+
 export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   address,
   serviceTimes,
@@ -104,6 +123,27 @@ export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   whatsappUrl,
   paystackPublicKey
 }`;
+
+export type ServiceTime = { label: string; time: string; note?: string };
+export type SiteSettings = {
+  address?: string;
+  serviceTimes?: ServiceTime[];
+  facebookUrl?: string;
+  whatsappUrl?: string;
+  paystackPublicKey?: string;
+};
+
+// Shared fallback — used by Home, Visit, and the root layout (for the
+// Footer), so there's exactly one place this data lives instead of three
+// copies that could quietly drift apart.
+export const FALLBACK_SITE_SETTINGS: SiteSettings = {
+  address: "Mile Six Bypass Road (New Ground), Dinyavoh, Jalingo, Taraba State",
+  serviceTimes: [
+    { label: "1st Service", time: "7:00 AM" },
+    { label: "2nd Service", time: "9:00 AM", note: "Interpreted in Hausa" },
+    { label: "Midweek Service", time: "Wed · 5:00 PM" },
+  ],
+};
 
 export const UPCOMING_EVENTS_QUERY = `*[_type == "event" && date >= now()] | order(date asc)[0...3]{
   "slug": slug.current,

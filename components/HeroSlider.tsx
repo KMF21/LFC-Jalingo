@@ -54,21 +54,24 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             else if (info.offset.x > 80) goTo(index - 1);
           }}
         >
-          {/* Portrait/photo sits right, gradient carries the left side —
-              matches the resources.faithtabernacle layout pattern */}
-          <div className="absolute inset-y-0 right-0 hidden w-[42%] md:block">
-            <Image
-              src={slide.imageUrl}
-              alt={slide.title}
-              fill
-              priority={index === 0}
-              className="object-cover object-top opacity-90"
-              sizes="42vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-red-deep/80 via-transparent to-transparent" />
-          </div>
+          {/* Full-bleed image at every breakpoint — previously this was
+              wrapped in `hidden md:block`, a desktop-only right-hand
+              panel, so mobile visitors saw the plain gradient with no
+              photo at all. Now the image is the base layer everywhere,
+              with a gradient overlay on top for text legibility and
+              brand color, and a stronger overlay at small sizes since
+              there's no side panel absorbing the darkness there. */}
+          <Image
+            src={slide.imageUrl}
+            alt={slide.title}
+            fill
+            priority={index === 0}
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-red-deep/90 via-red-deep/55 to-red-deep/25 md:bg-gradient-to-r md:from-red-deep/85 md:via-red-deep/40 md:to-transparent" />
 
-          <div className="container-content relative flex h-full flex-col justify-center">
+          <div className="container-content relative flex h-full flex-col justify-end pb-16 md:justify-center md:pb-0">
             <motion.span
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}

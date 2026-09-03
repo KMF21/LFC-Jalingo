@@ -5,12 +5,7 @@ import Accordion, { AccordionItem } from "@/components/Accordion";
 import Reveal, { RevealGroup, revealItemVariants } from "@/components/Reveal";
 import Link from "next/link";
 import { motion } from "motion/react";
-
-const services = [
-  { label: "1st Service", time: "7:00 AM" },
-  { label: "2nd Service", time: "9:00 AM", note: "Interpreted in Hausa" },
-  { label: "Midweek Service", time: "Wed · 5:00 PM" },
-];
+import { safeFetch, SITE_SETTINGS_QUERY, SiteSettings, FALLBACK_SITE_SETTINGS } from "@/lib/sanity";
 
 const expectFaqs: AccordionItem[] = [
   { question: "How long is a service?", answer: "Services typically run about 2 hours, with worship, the word, and ministration." },
@@ -18,7 +13,11 @@ const expectFaqs: AccordionItem[] = [
   { question: "What about my children?", answer: "Children are welcome in the main service, and we're happy to help you settle in with your family." },
 ];
 
-export default function VisitPage() {
+export default async function VisitPage() {
+  const siteSettings = await safeFetch<SiteSettings>(SITE_SETTINGS_QUERY, FALLBACK_SITE_SETTINGS);
+  const services = siteSettings.serviceTimes || FALLBACK_SITE_SETTINGS.serviceTimes!;
+  const address = siteSettings.address || FALLBACK_SITE_SETTINGS.address!;
+
   return (
     <main>
       <PageHero
@@ -65,13 +64,11 @@ export default function VisitPage() {
       <section className="container-content grid grid-cols-1 gap-10 py-16 md:grid-cols-2">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Location</p>
-          <p className="mt-2 text-sm text-ink-muted">
-            Mile Six Bypass Road, Dinyavoh, Jalingo, Taraba State
-          </p>
+          <p className="mt-2 text-sm text-ink-muted">{address}</p>
           <div className="mt-4 overflow-hidden rounded-2xl border border-ink/10">
             <iframe
               title="Living Faith Church Jalingo location"
-              src="https://www.google.com/maps?q=Mile+Six+Bypass+Road+Dinyavoh+Jalingo+Taraba+State&output=embed"
+              src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
               className="h-64 w-full"
               loading="lazy"
             />

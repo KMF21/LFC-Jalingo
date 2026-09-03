@@ -6,9 +6,9 @@ import { schemaTypes } from "./sanity/schemas";
 export default defineConfig({
   name: "lfc-jalingo-studio",
   title: "LFC Jalingo — Content Studio",
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your-project-id",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!, // 👈 Enforce real project ID
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  basePath: "/studio", // 👈 Required for Next.js App Router subpath integration
+  basePath: "/studio",
   plugins: [structureTool(), visionTool()],
   schema: {
     types: schemaTypes,

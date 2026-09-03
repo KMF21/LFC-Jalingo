@@ -230,6 +230,52 @@ array — `lib/portableText.ts` adds a minimal flattener for it; swap for
 `@portabletext/react` later if the sermon notes need real rich formatting
 (bold, lists, links).
 
+**Also now wired:** the homepage's `ServiceTimes`, the Visit page's service
+times/address/map, and the **Footer** (address, service times, Facebook/
+WhatsApp links) — all pull from `siteSettings` via one shared
+`FALLBACK_SITE_SETTINGS` constant in `lib/sanity.ts`, so there's a single
+source of truth instead of the same data typed in three places. The Footer
+required making `app/layout.tsx` itself an async server component, since
+it wraps every route and is the one place the Footer renders from.
+
+**Deliberately still static, not a gap:** the Contact page's FAQ, the About
+page's beliefs accordion and pillars grid, and the homepage's ministries
+bento grid (which intentionally curates a fixed five rather than listing
+everything — that's what `/ministries` is for). None of these have a
+corresponding Sanity schema — they were built as fixed content because no
+content type was ever defined for "FAQ entries" or "belief statements." If
+you want those editable from Studio too, that's a schema-design decision
+(a `faq` document type, etc.) rather than a wiring fix.
+
+## Diagnosing "content isn't pulling from Sanity" + auto-populating known content
+
+`safeFetch()` (above) deliberately hides fetch failures behind placeholder
+content — great for the site never breaking, bad for telling a wrong
+project ID, an empty dataset, and a CORS block apart, since all three look
+identical from the browser. Two scripts fix that:
+
+1. **`node scripts/check-sanity.mjs`** — talks to Sanity directly,
+   bypassing Next.js and safeFetch entirely. Reports whether the project
+   ID is actually set (vs still the `.env.example` placeholder), whether
+   the connection works at all (surfaces CORS errors explicitly, with the
+   fix), and how many documents of each type exist. Run this first,
+   always — it tells you which of the three problems you actually have.
+
+2. **`SANITY_API_WRITE_TOKEN=sk... node scripts/seed.mjs`** — populates
+   Sanity with every piece of real content already established for this
+   project (leader names/roles, ministry descriptions, exact service
+   times) instead of retyping it into Studio by hand. Idempotent — safe to
+   re-run after editing the data in the script. Auto-attaches photos too,
+   if found at the `public/images/leaders/...` / `public/images/ministries/...`
+   paths listed in the script — anything not found is logged so you know
+   exactly which photos are still needed. Deliberately does **not** invent
+   bank account numbers, Paystack keys, or social links — those are real
+   business/financial details only the church can provide.
+
+Get a write token at sanity.io/manage → this project → API → Tokens →
+Editor permission. Keep it server-side only (`SANITY_API_WRITE_TOKEN`,
+never `NEXT_PUBLIC_`) and never commit it.
+
 ## Local development
 
 ```bash
@@ -240,3 +286,25 @@ npm run dev
 Sanity Studio (once a project ID is set) is typically run separately via
 `npx sanity dev` from within the `sanity/` config, or embedded at a
 `/studio` route if preferred later.
+
+## Latest additions: mobile hero fix, pastor welcome, founder section
+
+- **Mobile hero image bug, fixed.** `HeroSlider` previously wrapped the
+  photo in `hidden md:block` — a desktop-only side panel — so mobile
+  visitors saw only the plain gradient, no photo at all. Rebuilt as one
+  full-bleed image + gradient overlay at every breakpoint (stronger
+  overlay on mobile, since there's no side panel absorbing darkness
+  there).
+- **`components/PastorWelcome.tsx`** — a homepage welcome section (photo +
+  first-person message + name/title). Renders **nothing** until a real
+  `leader.welcomeMessage` exists in Sanity — no placeholder or drafted
+  text stands in, since this copy is publicly attributed to a real, named
+  person and must be his own approved words. See the field description on
+  `sanity/schemas/leader.ts` and the note in `scripts/seed.mjs` — this
+  field is deliberately never auto-seeded.
+- **`components/FounderSection.tsx`** — factual, text-only paragraph about
+  Bishop David Oyedepo and Living Faith Church Worldwide on the About
+  page, plus a one-line mention added to the homepage's `AboutTeaser`.
+  Deliberately no photo (no licensed image of him to use) and no quoted
+  "message" — biographical fact only, same reasoning as above applied to
+  a more public figure.

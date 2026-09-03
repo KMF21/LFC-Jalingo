@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
 
-// Bold geometric sans for headlines — matches the national site's actual
-// typographic voice (see resources.faithtabernacle.org.ng), not a generic
-// editorial serif.
 const display = Poppins({
   subsets: ["latin"],
   weight: ["600", "700"],
@@ -25,14 +20,14 @@ export const metadata: Metadata = {
     "Living Faith Church, Jalingo, Taraba State — service times, sermons, resources, and ministries.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
-      <body>
-        <Nav />
-        {children}
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

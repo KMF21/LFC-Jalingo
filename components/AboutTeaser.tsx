@@ -21,7 +21,8 @@ export default function AboutTeaser() {
           </h2>
           <p className="mx-auto mt-4 max-w-md text-paper/85">
             From our founding mandate to our leadership and outreach across Taraba —
-            discover the heartbeat behind Living Faith Church, Jalingo.
+            discover the heartbeat behind Living Faith Church, Jalingo, part of
+            Living Faith Church Worldwide, founded by Bishop David Oyedepo.
           </p>
           <Link
             href="/about"

@@ -7,7 +7,8 @@ import EventsRow, { EventItem } from "@/components/EventsRow";
 import FeaturedSermon, { FeaturedSermonData } from "@/components/FeaturedSermon";
 import InvolvementGrid from "@/components/InvolvementGrid";
 import GivingBand from "@/components/GivingBand";
-import { safeFetch, HOMEPAGE_HERO_QUERY, FEATURED_SERMON_QUERY, UPCOMING_EVENTS_QUERY } from "@/lib/sanity";
+import PastorWelcome, { PastorWelcomeData } from "@/components/PastorWelcome";
+import { safeFetch, HOMEPAGE_HERO_QUERY, FEATURED_SERMON_QUERY, UPCOMING_EVENTS_QUERY, SITE_SETTINGS_QUERY, SiteSettings, FALLBACK_SITE_SETTINGS, PASTOR_WELCOME_QUERY, sanityClient } from "@/lib/sanity";
 
 // Fallback content — used until a real Sanity project + real documents
 // exist (see .env.example and the "Design system" section of the README).
@@ -19,7 +20,7 @@ const fallbackHeroSlides: HeroSlide[] = [
     title: "Welcome to Living Faith",
     accentWord: "Church, Jalingo",
     subtitle: "New Ground, Mile Six Bypass Road, Dinyavoh",
-    imageUrl: "/images/lfchurch.jpg",
+    imageUrl: "/images/pastor-preaching.jpg",
     ctaLabel: "Plan your visit",
     ctaHref: "/visit",
   },
@@ -50,16 +51,22 @@ const fallbackEvents: EventItem[] = [
 ];
 
 export default async function HomePage() {
-  const [heroSlides, featuredSermon, events] = await Promise.all([
+  const [heroSlides, featuredSermon, events, siteSettings, pastorWelcome] = await Promise.all([
     safeFetch<HeroSlide[]>(HOMEPAGE_HERO_QUERY, fallbackHeroSlides),
     safeFetch<FeaturedSermonData>(FEATURED_SERMON_QUERY, fallbackFeaturedSermon),
     safeFetch<EventItem[]>(UPCOMING_EVENTS_QUERY, fallbackEvents),
+    safeFetch<SiteSettings>(SITE_SETTINGS_QUERY, FALLBACK_SITE_SETTINGS),
+    // Not safeFetch: there is no placeholder content for this one, by
+    // design — PastorWelcome renders nothing until a real, approved
+    // message exists (see components/PastorWelcome.tsx).
+    sanityClient.fetch<PastorWelcomeData | null>(PASTOR_WELCOME_QUERY).catch(() => null),
   ]);
 
   return (
     <main>
       <HeroSlider slides={heroSlides} />
-      <ServiceTimes />
+      <ServiceTimes services={siteSettings.serviceTimes} />
+      <PastorWelcome pastor={pastorWelcome} />
       <QuickLinksRow />
       <MinistriesTeaser />
       <AboutTeaser />

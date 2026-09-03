@@ -1,5 +1,6 @@
 import PageHero from "@/components/PageHero";
 import PillarsGrid from "@/components/PillarsGrid";
+import FounderSection from "@/components/FounderSection";
 import LeaderBio from "@/components/LeaderBio";
 import LeaderCard, { LeaderData } from "@/components/LeaderCard";
 import Accordion, { AccordionItem } from "@/components/Accordion";
@@ -63,7 +64,7 @@ export default async function AboutPage() {
         description="Living Faith Church, Jalingo is a vibrant community committed to helping you and your family grow closer to your God-given purpose."
       />
 
-      <section className="container-content mt-8 pb-4">
+      <section className="container-content -mt-8 pb-4">
         <Reveal>
           <div className="grid grid-cols-3 gap-3">
             {anchorNav.map((a) => (
@@ -92,6 +93,8 @@ export default async function AboutPage() {
       <section className="container-content max-w-2xl pb-16">
         <PillarsGrid />
       </section>
+
+      <FounderSection />
 
       <section id="leadership" className="scroll-mt-20 bg-paper-dim py-16">
         <div className="container-content max-w-2xl">

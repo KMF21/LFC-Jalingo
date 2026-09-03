@@ -3,9 +3,7 @@ import Reveal from "@/components/Reveal";
 import Image from "next/image";
 import { MINISTRY_BY_SLUG_QUERY, sanityClient } from "@/lib/sanity";
 
-type Props = { 
-  params: Promise<{ slug: string }>;
-};
+type Props = { params: { slug: string } };
 
 type MinistryDetail = {
   name: string;
@@ -26,10 +24,7 @@ const fallbackMinistry: MinistryDetail = {
 
 async function getMinistry(slug: string): Promise<MinistryDetail> {
   try {
-    const data = await sanityClient.fetch<MinistryDetail | null>(
-      MINISTRY_BY_SLUG_QUERY,
-      { slug }
-    );
+    const data = await sanityClient.fetch<MinistryDetail | null>(MINISTRY_BY_SLUG_QUERY, { slug });
     return data ?? fallbackMinistry;
   } catch (err) {
     console.error("Sanity fetch failed, using fallback content:", err);
@@ -38,12 +33,8 @@ async function getMinistry(slug: string): Promise<MinistryDetail> {
 }
 
 export default async function MinistryDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const ministry = await getMinistry(slug);
-  const gallery =
-    ministry.galleryUrls && ministry.galleryUrls.length > 0
-      ? ministry.galleryUrls
-      : [null, null, null];
+  const ministry = await getMinistry(params.slug);
+  const gallery = ministry.galleryUrls && ministry.galleryUrls.length > 0 ? ministry.galleryUrls : [null, null, null];
 
   return (
     <main>
