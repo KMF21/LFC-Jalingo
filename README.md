@@ -328,6 +328,23 @@ This project's standing default for any Sanity integration is
 `next-sanity`'s **Live Content API** (`defineLive`), not a plain
 `@sanity/client` + manual `fetch()` call. The difference matters:
 
+**Version matters here, concretely.** `defineLive`/`next-sanity/live` as
+a stable subpath requires `next-sanity` **v13 or later** (which in turn
+requires Next.js 16, React 19.2+, and `@sanity/client` 7.26.1+ — all
+already satisfied by this project's other dependencies). An earlier
+version of this scaffold pinned `next-sanity` to `^9.8.53`, which doesn't
+reliably expose `next-sanity/live` — that caused a
+`Module not found: Can't resolve 'next-sanity/live'` build error. If you
+ever see that error again, check `package.json`'s `next-sanity` version
+before anything else.
+
+`sanity/lib/live.ts` also deliberately passes `serverToken: false,
+browserToken: false` when `SANITY_API_READ_TOKEN` isn't set, rather than
+throwing — this project doesn't use Draft Mode or Visual Editing, so a
+token isn't required for real-time updates to published content to work.
+If Draft Mode/Visual Editing gets added later, set that env var and it's
+picked up automatically.
+
 - **Plain `client.fetch()`** gets cached by Next.js like any other fetch.
   Without extra work (time-based revalidation, on-demand webhook
   revalidation, or `force-dynamic`), a Studio publish might not show up
