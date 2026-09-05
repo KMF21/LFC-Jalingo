@@ -20,9 +20,9 @@ export default function PastorWelcome({ pastor }: { pastor: PastorWelcomeData | 
 
   return (
     <section className="border-b border-ink/10 bg-paper py-16">
-      <div className="container-content flex flex-col items-center gap-10 md:flex-row">
+      <div className="container-content flex flex-col items-center gap-8 md:flex-row">
         <Reveal>
-          <div className="relative h-[400px] w-[400px] shrink-0 overflow-hidden rounded-full bg-ink/10">
+          <div className="relative h-56 w-56 shrink-0 overflow-hidden rounded-full bg-ink/10">
             {pastor.photoUrl && (
               <Image src={pastor.photoUrl} alt={pastor.name} fill className="object-cover" />
             )}
@@ -30,7 +30,7 @@ export default function PastorWelcome({ pastor }: { pastor: PastorWelcomeData | 
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="text-3xl font-semibold uppercase tracking-wide2 text-red">A welcome from our pastor</p>
+          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">A welcome from our pastor</p>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink-muted">
             &ldquo;{pastor.welcomeMessage}&rdquo;
           </p>

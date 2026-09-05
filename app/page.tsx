@@ -1,0 +1,91 @@
+import HeroSlider, { HeroSlide } from "@/components/HeroSlider";
+import ServiceTimes from "@/components/ServiceTimes";
+import QuickLinksRow from "@/components/QuickLinksRow";
+import MinistriesTeaser from "@/components/MinistriesTeaser";
+import AboutTeaser from "@/components/AboutTeaser";
+import EventsRow, { EventItem } from "@/components/EventsRow";
+import FeaturedSermon, { FeaturedSermonData } from "@/components/FeaturedSermon";
+import InvolvementGrid from "@/components/InvolvementGrid";
+import GivingBand from "@/components/GivingBand";
+import PastorWelcome, { PastorWelcomeData } from "@/components/PastorWelcome";
+import { safeSanityFetch, safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import {
+  HOMEPAGE_HERO_QUERY,
+  FEATURED_SERMON_QUERY,
+  UPCOMING_EVENTS_QUERY,
+  SITE_SETTINGS_QUERY,
+  SiteSettings,
+  FALLBACK_SITE_SETTINGS,
+  PASTOR_WELCOME_QUERY,
+} from "@/sanity/lib/queries";
+
+// Fallback content — used until a real Sanity project + real documents
+// exist (see .env.example and the "Design system" section of the README).
+// Once real heroSlide/sermon/event documents are published, these are
+// never reached; safeSanityFetch only falls back on an empty/failed query.
+// No time-based `revalidate` here on purpose — the Live Content API
+// (sanityFetch + <SanityLive/> in the root layout) handles pushing
+// updates via cache tags automatically once real content exists.
+const fallbackHeroSlides: HeroSlide[] = [
+  {
+    _key: "1",
+    title: "Welcome to Living Faith",
+    accentWord: "Church, Jalingo",
+    subtitle: "New Ground, Mile Six Bypass Road, Dinyavoh",
+    imageUrl: "/images/pastor-preaching.jpg",
+    ctaLabel: "Plan your visit",
+    ctaHref: "/visit",
+  },
+  {
+    _key: "2",
+    title: "A word for your",
+    accentWord: "liberation",
+    subtitle: "Listen to our latest sermons, free to stream or download",
+    imageUrl: "/images/congregation.jpg",
+    ctaLabel: "Browse sermons",
+    ctaHref: "/sermons",
+  },
+];
+
+const fallbackFeaturedSermon: FeaturedSermonData = {
+  title: "Sermon title",
+  preacher: "Pst Jesse Dazema",
+  date: "20 Jul 2026",
+  audioUrl: "",
+  durationSeconds: undefined,
+  pdfUrl: "#",
+};
+
+const fallbackEvents: EventItem[] = [
+  { slug: "mid-year-praise", title: "Mid Year Praise — Next Level Praise", date: "12 Jul", category: "Youth Alive" },
+  { slug: "cell-growth-workshop", title: "Cell Growth & Replication Workshop", date: "26 Jul", category: "Leadership" },
+  { slug: "communion-service", title: "Holy Communion Service", date: "02 Aug", category: "Sunday Service" },
+];
+
+export default async function HomePage() {
+  const [heroSlides, featuredSermon, events, siteSettings, pastorWelcome] = await Promise.all([
+    safeSanityFetch<HeroSlide[]>(HOMEPAGE_HERO_QUERY, fallbackHeroSlides),
+    safeSanityFetch<FeaturedSermonData>(FEATURED_SERMON_QUERY, fallbackFeaturedSermon),
+    safeSanityFetch<EventItem[]>(UPCOMING_EVENTS_QUERY, fallbackEvents),
+    safeSanityFetch<SiteSettings>(SITE_SETTINGS_QUERY, FALLBACK_SITE_SETTINGS),
+    // Not safeSanityFetch: there is no placeholder content for this one,
+    // by design — PastorWelcome renders nothing until a real, approved
+    // message exists (see components/PastorWelcome.tsx).
+    safeSanityFetchOne<PastorWelcomeData>(PASTOR_WELCOME_QUERY, {}),
+  ]);
+
+  return (
+    <main>
+      <HeroSlider slides={heroSlides} />
+      <ServiceTimes services={siteSettings.serviceTimes} />
+      <PastorWelcome pastor={pastorWelcome} />
+      <QuickLinksRow />
+      <MinistriesTeaser />
+      <AboutTeaser />
+      <EventsRow events={events} />
+      <FeaturedSermon sermon={featuredSermon} />
+      <InvolvementGrid />
+      <GivingBand />
+    </main>
+  );
+}

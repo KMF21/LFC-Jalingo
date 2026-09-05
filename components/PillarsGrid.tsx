@@ -1,4 +1,3 @@
-"use client";
 import Reveal, { RevealGroup, revealItemVariants } from "./Reveal";
 import { motion } from "motion/react";
 

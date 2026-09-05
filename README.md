@@ -15,8 +15,9 @@ Stack: **Next.js (App Router)** · **Sanity CMS** · **Motion** · **Tailwind CS
   free/paid toggle per item), `ministry` (with a reusable WhatsApp group link
   field), `bankAccount` (repeatable — add as many as needed), `leader`,
   `heroSlide`, and `siteSettings`.
-- **`lib/sanity.ts`** — the Sanity client plus the GROQ queries the homepage
-  needs, ready to wire in once the dataset has real content.
+- **`sanity/lib/`** — the Sanity client, GROQ queries, and Live Content API
+  setup (`client.ts`, `queries.ts`, `live.ts`, `safe-fetch.ts`, `image.ts`)
+  — see "Sanity architecture" below for why this is structured this way.
 
 ## Design decisions baked in
 
@@ -43,13 +44,10 @@ Stack: **Next.js (App Router)** · **Sanity CMS** · **Motion** · **Tailwind CS
    pastor, outreach) into Sanity as `heroSlide` and `leader`/`ministry`
    entries — the homepage currently points at placeholder paths in
    `app/page.tsx`.
-3. **Connect every page to real data** — `app/sermons/`, `app/resources/`,
-   `app/give/page.tsx`, `app/about/page.tsx`, `app/ministries/`, and
-   `app/visit/page.tsx` currently use hardcoded placeholder arrays; swap in
-   the matching query from `lib/sanity.ts` for each (`SERMONS_LIST_QUERY`,
-   `RESOURCES_LIST_QUERY`, `BANK_ACCOUNTS_QUERY`, `LEADERS_QUERY`,
-   `MINISTRIES_LIST_QUERY`, `SITE_SETTINGS_QUERY`) — every schema type now
-   has a matching query, confirmed field-for-field against the schemas.
+3. ~~Connect every page to real data~~ — **done.** Every page fetches its
+   matching query via `sanity/lib/safe-fetch.ts`, backed by
+   `sanity/lib/queries.ts` (see "Content wiring" and "Sanity architecture"
+   below).
 4. **Add a real Paystack public key** to `.env.local` — `PaystackButton` is
    fully wired to load the inline script and open the payment popup, it
    just needs `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` set.
@@ -197,31 +195,38 @@ transfer card. The design pass is complete across the full sitemap.
 **New reusable components added in this pass:** `Accordion.tsx`,
 `FeatureRow.tsx`, `LeaderBio.tsx`, `PillarsGrid.tsx`.
 
-## Content wiring: every page now fetches from Sanity
+## Content wiring: every page fetches from Sanity via the Live Content API
 
-Every page component (Home, Sermons, Resources, Ministries, Give, About)
-now calls its matching query from `lib/sanity.ts` instead of only holding
-static placeholder arrays. Two things make this safe to ship before a real
-Sanity project exists:
+Every page component (Home, Sermons, Resources, Ministries, Give, Visit,
+About) fetches its data through `sanity/lib/`, which is structured as the
+project's standing default for any Sanity CMS integration:
 
-- **`safeFetch()`** (`lib/sanity.ts`) — wraps `sanityClient.fetch`, catches
-  errors, and falls back to the same placeholder content each page used to
-  hardcode. Detail pages (`[slug]` routes) use an equivalent inline
-  try/catch since they need a query variable (`{ slug }`).
-- **Nothing needs to change in the components once real data exists** — the
-  moment a real `NEXT_PUBLIC_SANITY_PROJECT_ID` is set and real documents
-  (with real photos) are published, `safeFetch` starts returning that data
-  instead of the fallback automatically.
+- **`sanity/lib/client.ts`** — the base `next-sanity` client.
+- **`sanity/lib/live.ts`** — `defineLive({ client })`, exporting
+  `sanityFetch` and `<SanityLive />`. This is what gives real-time updates
+  when content changes in Studio — no manual revalidation, no webhooks,
+  no polling. `<SanityLive />` is mounted once in `app/layout.tsx`.
+- **`sanity/lib/queries.ts`** — every GROQ query and its matching
+  TypeScript type, in one place.
+- **`sanity/lib/safe-fetch.ts`** — `safeSanityFetch()` and
+  `safeSanityFetchOne()`, a thin wrapper around `sanityFetch` that catches
+  errors and falls back to placeholder content instead of throwing or
+  rendering empty. This matters specifically because no real Sanity
+  project exists yet: every page calls this instead of `sanityFetch`
+  directly, so the site stays fully functional with placeholder data
+  today, and starts pulling real, **live-updating** content automatically
+  the moment a real project ID + real documents exist — no further code
+  changes needed at that point.
 
 **Images specifically:** hero slides, leader/staff photos, ministry photos
-and galleries, and event thumbnails all now render from
-`image.asset->url` once uploaded in Sanity. Until then, they render as
-empty placeholder boxes (ministry/event images) or the hardcoded
-`/images/...` paths (hero) — neither of which exist as real files in this
-scaffold, so uploading real photos to Sanity is the actual next step, not
-adding files to `/public`.
+and galleries, and event thumbnails all render from `image.asset->url`
+once uploaded in Sanity. Until then, they render as empty placeholder
+boxes (ministry/event images) or the hardcoded `/images/...` paths (hero)
+— neither of which exist as real files in this scaffold, so uploading
+real photos to Sanity is the actual next step, not adding files to
+`/public`.
 
-A couple of small fixes worth knowing about if you're diffing against an
+A couple of fixes worth knowing about if you're diffing against an
 earlier version of this scaffold: `HOMEPAGE_HERO_QUERY` was requesting a
 `_key` field that doesn't exist on standalone `heroSlide` documents (only
 array items have `_key`) — fixed to alias `_id` instead. And the sermon
@@ -230,13 +235,14 @@ array — `lib/portableText.ts` adds a minimal flattener for it; swap for
 `@portabletext/react` later if the sermon notes need real rich formatting
 (bold, lists, links).
 
-**Also now wired:** the homepage's `ServiceTimes`, the Visit page's service
+**Also wired:** the homepage's `ServiceTimes`, the Visit page's service
 times/address/map, and the **Footer** (address, service times, Facebook/
 WhatsApp links) — all pull from `siteSettings` via one shared
-`FALLBACK_SITE_SETTINGS` constant in `lib/sanity.ts`, so there's a single
-source of truth instead of the same data typed in three places. The Footer
-required making `app/layout.tsx` itself an async server component, since
-it wraps every route and is the one place the Footer renders from.
+`FALLBACK_SITE_SETTINGS` constant in `sanity/lib/queries.ts`, so there's a
+single source of truth instead of the same data typed in three places.
+The Footer required making `app/layout.tsx` itself an async server
+component, since it wraps every route and is the one place the Footer
+renders from — and that's also where `<SanityLive />` is mounted.
 
 **Deliberately still static, not a gap:** the Contact page's FAQ, the About
 page's beliefs accordion and pillars grid, and the homepage's ministries
@@ -249,28 +255,34 @@ you want those editable from Studio too, that's a schema-design decision
 
 ## Diagnosing "content isn't pulling from Sanity" + auto-populating known content
 
-`safeFetch()` (above) deliberately hides fetch failures behind placeholder
-content — great for the site never breaking, bad for telling a wrong
-project ID, an empty dataset, and a CORS block apart, since all three look
-identical from the browser. Two scripts fix that:
+`safeSanityFetch()` (above) deliberately hides fetch failures behind
+placeholder content — great for the site never breaking, bad for telling a
+wrong project ID, an empty dataset, and a CORS block apart, since all
+three look identical from the browser. Two scripts fix that:
 
-1. **`node scripts/check-sanity.mjs`** — talks to Sanity directly,
-   bypassing Next.js and safeFetch entirely. Reports whether the project
-   ID is actually set (vs still the `.env.example` placeholder), whether
-   the connection works at all (surfaces CORS errors explicitly, with the
+1. **`node scripts/check-sanity.mjs`** — talks to Sanity directly via
+   `@sanity/client` (not `next-sanity`/`sanityFetch` — this is a
+   standalone Node script outside the Next.js app, so it doesn't need the
+   Live Content API machinery). Reports whether the project ID is
+   actually set (vs still the `.env.example` placeholder), whether the
+   connection works at all (surfaces CORS errors explicitly, with the
    fix), and how many documents of each type exist. Run this first,
    always — it tells you which of the three problems you actually have.
 
 2. **`SANITY_API_WRITE_TOKEN=sk... node scripts/seed.mjs`** — populates
    Sanity with every piece of real content already established for this
    project (leader names/roles, ministry descriptions, exact service
-   times) instead of retyping it into Studio by hand. Idempotent — safe to
-   re-run after editing the data in the script. Auto-attaches photos too,
-   if found at the `public/images/leaders/...` / `public/images/ministries/...`
-   paths listed in the script — anything not found is logged so you know
-   exactly which photos are still needed. Deliberately does **not** invent
-   bank account numbers, Paystack keys, or social links — those are real
-   business/financial details only the church can provide.
+   times, and the two homepage hero slides — same copy that was
+   hardcoded as the fallback, now editable in Studio) instead of
+   retyping it into Studio by hand. Idempotent — safe to re-run after
+   editing the data in the script. Auto-attaches photos too, if found at
+   the `public/images/leaders/...` / `public/images/ministries/...` paths
+   listed in the script — anything not found is logged so you know
+   exactly which photos are still needed. Deliberately does **not**
+   invent bank account numbers, Paystack keys, social links, or the
+   pastor's `welcomeMessage` (seeded only as an unmistakable bracketed
+   placeholder) — those are real financial/business details or words
+   attributed to a real person, not something to fabricate.
 
 Get a write token at sanity.io/manage → this project → API → Tokens →
 Editor permission. Keep it server-side only (`SANITY_API_WRITE_TOKEN`,
@@ -301,10 +313,63 @@ Sanity Studio (once a project ID is set) is typically run separately via
   text stands in, since this copy is publicly attributed to a real, named
   person and must be his own approved words. See the field description on
   `sanity/schemas/leader.ts` and the note in `scripts/seed.mjs` — this
-  field is deliberately never auto-seeded.
+  field is seeded only as an unmistakable bracketed placeholder, never a
+  drafted quote.
 - **`components/FounderSection.tsx`** — factual, text-only paragraph about
   Bishop David Oyedepo and Living Faith Church Worldwide on the About
   page, plus a one-line mention added to the homepage's `AboutTeaser`.
   Deliberately no photo (no licensed image of him to use) and no quoted
   "message" — biographical fact only, same reasoning as above applied to
   a more public figure.
+
+## Sanity architecture: the Live Content API (defineLive), not plain fetch
+
+This project's standing default for any Sanity integration is
+`next-sanity`'s **Live Content API** (`defineLive`), not a plain
+`@sanity/client` + manual `fetch()` call. The difference matters:
+
+- **Plain `client.fetch()`** gets cached by Next.js like any other fetch.
+  Without extra work (time-based revalidation, on-demand webhook
+  revalidation, or `force-dynamic`), a Studio publish might not show up
+  on the live site until the next deploy.
+- **`sanityFetch()` from `defineLive`** automatically tags its requests
+  and pushes updates to the browser in real time via `<SanityLive />` —
+  publish something in Studio, and pages using `sanityFetch` reflect it
+  without a redeploy or a manual cache-busting step.
+
+Every page in this app uses the second approach, via
+`sanity/lib/safe-fetch.ts`'s wrappers around `sanityFetch`. If you (or a
+future contributor, or another AI session) ever add a new page or a new
+query, **use `safeSanityFetch`/`safeSanityFetchOne` from
+`sanity/lib/safe-fetch.ts`**, not a raw `client.fetch()` call — that's how
+this consistency is maintained. The one correct exception is the
+standalone Node scripts (`scripts/seed.mjs`, `scripts/check-sanity.mjs`),
+which use `@sanity/client` directly since they run outside the Next.js
+app entirely and have no use for live browser updates.
+
+## Content updated in Studio but not showing on the site?
+
+Two things to check, roughly in order of likelihood:
+
+1. **Did you click Publish, not just save?** Studio autosaves as a
+   *draft* (`drafts.<id>`), invisible to the standard published-content
+   queries this app uses. Closing the edit panel isn't the same as
+   publishing.
+2. **Did you edit the right field?** `leader` documents have both a
+   "Short bio" (`bio`, used on the About page) and a "Homepage welcome
+   message" (`welcomeMessage`, used on Home) — easy to mix up.
+
+Caching is generally *not* the culprit here, by design — every page uses
+`sanityFetch` (via `safeSanityFetch`) from the Live Content API, which
+pushes updates through `<SanityLive />` without needing a manual
+`revalidate` value or a redeploy. If updates still aren't appearing, check
+that `<SanityLive />` is actually mounted (`app/layout.tsx`) and that
+`SANITY_API_READ_TOKEN` is set if your dataset is private.
+
+To rule out the app entirely and check Sanity's actual data directly:
+open Studio → the Vision tool (usually in the top toolbar) → paste in
+the exact query from `sanity/lib/queries.ts` (e.g. `PASTOR_WELCOME_QUERY`)
+→ run it. If it returns your content there, the data is correct and the
+issue is in the app's fetch wiring. If it returns nothing, the problem is
+in Studio (draft vs. published, or wrong field) — `scripts/check-sanity.mjs`
+is the command-line equivalent of the same check.

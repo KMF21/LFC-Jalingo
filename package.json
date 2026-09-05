@@ -20,6 +20,7 @@
     "motion": "^11.3.19",
     "@sanity/client": "^7.26.2",
     "@sanity/image-url": "^1.2.0",
+    "next-sanity": "^9.8.53",
     "@aws-sdk/client-s3": "^3.629.0",
     "ffmpeg-static": "^5.2.0",
     "fluent-ffmpeg": "^2.1.3"

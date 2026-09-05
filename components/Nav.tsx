@@ -1,81 +1,9 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import Link from "next/link";
-// import Image from "next/image";
-
-// const primaryLinks = [
-//   { href: "/about", label: "About" },
-//   { href: "/sermons", label: "Sermons" },
-//   { href: "/resources", label: "Resources" },
-//   { href: "/ministries", label: "Ministries" },
-//   { href: "/give", label: "Give" },
-// ];
-
-// export default function Nav() {
-//   const [scrolled, setScrolled] = useState(false);
-
-//   useEffect(() => {
-//     const onScroll = () => setScrolled(window.scrollY > 8);
-//     onScroll();
-//     window.addEventListener("scroll", onScroll, { passive: true });
-//     return () => window.removeEventListener("scroll", onScroll);
-//   }, []);
-
-//   return (
-//     <header
-//       className={`sticky top-0 z-40 bg-paper/95 backdrop-blur transition-shadow duration-300 ${
-//         scrolled ? "shadow-[0_1px_0_0_rgba(0,0,0,0.08)]" : ""
-//       }`}
-//     >
-//       <div className="container-content flex h-16 items-center justify-between">
-//         <Link href="/" className="flex items-center gap-2">
-//           <Image
-//             src="/images/lflogo.png"
-//             alt="LFC Jalingo logo"
-//             width={28}
-//             height={28}
-//             className="rounded-full"
-//           />
-//           <span className="font-display text-sm font-semibold tracking-wide2 uppercase text-ink">
-//             LFC Jalingo
-//           </span>
-//         </Link>
-
-//         <nav className="hidden items-center gap-7 text-sm font-medium text-ink-muted md:flex">
-//           {primaryLinks.map((link) => (
-//             <Link key={link.href} href={link.href} className="transition hover:text-red">
-//               {link.label}
-//             </Link>
-//           ))}
-//         </nav>
-
-//         <div className="flex items-center gap-3">
-//           <Link
-//             href="/prayer-request"
-//             className="hidden text-xs font-semibold text-ink-muted transition hover:text-red sm:inline-block"
-//           >
-//             Prayer request
-//           </Link>
-//           <Link
-//             href="/visit"
-//             className="rounded-full bg-red px-4 py-2 text-xs font-bold uppercase tracking-wide text-paper transition hover:bg-red-deep"
-//           >
-//             Plan a visit
-//           </Link>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-// import FlameMark from "./FlameMark";
-import Image from "next/image";
+import FlameMark from "./FlameMark";
 
 const primaryLinks = [
   { href: "/about", label: "About" },
@@ -113,18 +41,8 @@ export default function Nav() {
       }`}
     >
       <div className="container-content flex h-16 items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-          onClick={() => setMenuOpen(false)}
-        >
-          <Image
-            src="/images/lflogo.png"
-            alt="LFC Jalingo logo"
-            width={28}
-            height={28}
-            className="rounded-full"
-          />
+        <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+          <FlameMark size={28} />
           <span className="font-display text-sm font-semibold tracking-wide2 uppercase text-ink">
             LFC Jalingo
           </span>
@@ -132,11 +50,7 @@ export default function Nav() {
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-ink-muted md:flex">
           {primaryLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="transition hover:text-red"
-            >
+            <Link key={link.href} href={link.href} className="transition hover:text-red">
               {link.label}
             </Link>
           ))}
@@ -175,28 +89,17 @@ export default function Nav() {
               aria-hidden="true"
             >
               <motion.line
-                x1="4"
-                y1="7"
-                x2="20"
-                y2="7"
+                x1="4" y1="7" x2="20" y2="7"
                 animate={menuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
                 style={{ transformOrigin: "12px 7px" }}
               />
               <motion.line
-                x1="4"
-                y1="12"
-                x2="20"
-                y2="12"
+                x1="4" y1="12" x2="20" y2="12"
                 animate={{ opacity: menuOpen ? 0 : 1 }}
               />
               <motion.line
-                x1="4"
-                y1="17"
-                x2="20"
-                y2="17"
-                animate={
-                  menuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }
-                }
+                x1="4" y1="17" x2="20" y2="17"
+                animate={menuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
                 style={{ transformOrigin: "12px 17px" }}
               />
             </motion.svg>

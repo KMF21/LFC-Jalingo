@@ -1,7 +1,7 @@
 import Link from "next/link";
 import FlameMark from "./FlameMark";
 import Reveal from "./Reveal";
-import Image from "next/image";
+import type { ServiceTime } from "@/sanity/lib/queries";
 
 const quickLinks = [
   { href: "/sermons", label: "Sermons" },
@@ -20,30 +20,37 @@ const ministries = [
   { href: "/ministries/outreach", label: "Outreach & Community" },
 ];
 
-export default function Footer() {
+type FooterProps = {
+  address?: string;
+  serviceTimes?: ServiceTime[];
+  facebookUrl?: string;
+  whatsappUrl?: string;
+};
+
+export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl }: FooterProps) {
   return (
     <footer className="bg-ink pt-14 text-paper/70">
       <div className="container-content grid grid-cols-1 gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-4">
         <Reveal>
           <div className="flex items-center gap-2">
-            <Image
-                       src="/images/lflogo.png"
-                       alt="LFC Jalingo logo"
-                       width={26}
-                       height={26}
-                       className="rounded-full"
-                     />
+            <FlameMark size={26} />
             <span className="font-display text-sm font-semibold text-paper">
               Living Faith Church, Jalingo
             </span>
           </div>
-          <p className="mt-4 text-sm">
-            Mile Six Bypass Road (New Ground), Dinyavoh, Jalingo, Taraba State
-          </p>
+          {address && <p className="mt-4 text-sm">{address}</p>}
           <p className="mt-3 text-sm">
-            <a href="#" className="hover:text-coral">Facebook</a>
+            {facebookUrl ? (
+              <a href={facebookUrl} className="hover:text-coral">Facebook</a>
+            ) : (
+              <span className="text-paper/40">Facebook</span>
+            )}
             <span className="mx-2 text-paper/30">&middot;</span>
-            <a href="#" className="hover:text-coral">WhatsApp</a>
+            {whatsappUrl ? (
+              <a href={whatsappUrl} className="hover:text-coral">WhatsApp</a>
+            ) : (
+              <span className="text-paper/40">WhatsApp</span>
+            )}
           </p>
         </Reveal>
 
@@ -76,9 +83,12 @@ export default function Footer() {
         <Reveal delay={0.15}>
           <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Service Times</p>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
-            <li>1st Service &middot; 7:00 AM</li>
-            <li>2nd Service &middot; 9:00 AM (Hausa)</li>
-            <li>Midweek &middot; Wed, 5:00 PM</li>
+            {(serviceTimes || []).map((s) => (
+              <li key={s.label}>
+                {s.label} &middot; {s.time}
+                {s.note ? ` (${s.note})` : ""}
+              </li>
+            ))}
           </ul>
         </Reveal>
       </div>

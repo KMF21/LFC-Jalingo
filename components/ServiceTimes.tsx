@@ -1,4 +1,4 @@
-import type { ServiceTime } from "@/lib/sanity";
+import type { ServiceTime } from "@/sanity/lib/queries";
 
 const defaultServices: ServiceTime[] = [
   { label: "1st Service", time: "7:00 AM" },
