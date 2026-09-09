@@ -2,9 +2,11 @@ import PageHero from "@/components/PageHero";
 import PaystackButton from "@/components/PaystackButton";
 import BankAccountsList, { BankAccount } from "@/components/BankAccountsList";
 import Reveal from "@/components/Reveal";
-import { safeFetch, RESOURCE_BY_SLUG_QUERY, BANK_ACCOUNTS_QUERY, sanityClient } from "@/lib/sanity";
+import { safeSanityFetch, safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import { RESOURCE_BY_SLUG_QUERY, BANK_ACCOUNTS_QUERY } from "@/sanity/lib/queries";
 
-type Props = { params: { slug: string } };
+// Next.js 15+ made dynamic route params async — must be awaited.
+type Props = { params: Promise<{ slug: string }> };
 
 type ResourceDetail = {
   title: string;
@@ -30,19 +32,15 @@ const fallbackBankAccounts: BankAccount[] = [
 ];
 
 async function getResource(slug: string): Promise<ResourceDetail> {
-  try {
-    const data = await sanityClient.fetch<ResourceDetail | null>(RESOURCE_BY_SLUG_QUERY, { slug });
-    return data ?? fallbackResource;
-  } catch (err) {
-    console.error("Sanity fetch failed, using fallback content:", err);
-    return fallbackResource;
-  }
+  const data = await safeSanityFetchOne<ResourceDetail>(RESOURCE_BY_SLUG_QUERY, { slug });
+  return data ?? fallbackResource;
 }
 
 export default async function ResourceDetailPage({ params }: Props) {
+  const { slug } = await params;
   const [resource, bankAccounts] = await Promise.all([
-    getResource(params.slug),
-    safeFetch<BankAccount[]>(BANK_ACCOUNTS_QUERY, fallbackBankAccounts),
+    getResource(slug),
+    safeSanityFetch<BankAccount[]>(BANK_ACCOUNTS_QUERY, fallbackBankAccounts),
   ]);
 
   return (
@@ -54,7 +52,7 @@ export default async function ResourceDetailPage({ params }: Props) {
           <Reveal>
             <a
               href={resource.fileUrl}
-              className="inline-block rounded-full bg-red px-6 py-3 text-md font-semibold text-paper transition hover:bg-red-deep"
+              className="inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep"
             >
               Download free
             </a>
@@ -72,7 +70,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                 <PaystackButton
                   amountNaira={resource.price ?? 0}
                   email="member@example.com"
-                  reference={`${params.slug}-${Date.now()}`}
+                  reference={`${slug}-${Date.now()}`}
                 />
                 <div className="flex items-center gap-3 text-sm text-ink-muted">
                   <span className="h-px flex-1 bg-ink/10" />

@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 
-// TODO: this page is unauthenticated in the scaffold, matching the API
-// route it calls. Put it behind admin auth (or at minimum an unlisted,
-// hard-to-guess path plus the shared-secret header noted in the API
-// route) before real sermon files pass through it.
 export default function UploadSermonPage() {
+  const [secret, setSecret] = useState("");
   const [status, setStatus] = useState<"idle" | "uploading" | "done" | "error">("idle");
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -20,7 +17,11 @@ export default function UploadSermonPage() {
     const formData = new FormData(form);
 
     try {
-      const res = await fetch("/api/admin/upload-sermon", { method: "POST", body: formData });
+      const res = await fetch("/api/admin/upload-sermon", {
+        method: "POST",
+        headers: { "x-admin-secret": secret },
+        body: formData,
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
       setResultUrl(data.audioUrl);
@@ -35,7 +36,7 @@ export default function UploadSermonPage() {
     <main className="container-content max-w-lg py-12">
       <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Admin</p>
       <h1 className="mt-2 font-display text-2xl font-bold text-ink">Upload sermon audio</h1>
-      <p className="mt-2 text-md text-ink-muted">
+      <p className="mt-2 text-base text-ink-muted">
         Pick the raw sermon file — it&rsquo;ll be compressed and stored automatically.
         Copy the link this gives you into the sermon&rsquo;s &ldquo;Audio URL&rdquo; field in
         Sanity Studio.
@@ -43,13 +44,24 @@ export default function UploadSermonPage() {
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3 rounded-2xl border border-ink/10 bg-paper-dim p-6">
         <label className="text-sm font-semibold text-ink-muted">
+          Admin secret
+          <input
+            required
+            type="password"
+            value={secret}
+            onChange={(e) => setSecret(e.target.value)}
+            placeholder="Ask whoever manages the site for this"
+            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-base text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
+          />
+        </label>
+        <label className="text-sm font-semibold text-ink-muted">
           Sermon file (any common audio format)
           <input
             required
             type="file"
             name="audio"
             accept="audio/*"
-            className="mt-1 block w-full text-md"
+            className="mt-1 block w-full text-base"
           />
         </label>
         <label className="text-sm font-semibold text-ink-muted">
@@ -59,7 +71,7 @@ export default function UploadSermonPage() {
             type="text"
             name="slug"
             placeholder="gateways-to-financial-dominion"
-            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-md text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
+            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-base text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
           />
         </label>
         <label className="text-sm font-semibold text-ink-muted">
@@ -68,14 +80,14 @@ export default function UploadSermonPage() {
             type="number"
             name="year"
             defaultValue={new Date().getFullYear()}
-            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-md text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
+            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-base text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
           />
         </label>
 
         <button
           type="submit"
           disabled={status === "uploading"}
-          className="mt-2 h-11 rounded-full bg-red text-md font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
+          className="mt-2 h-11 rounded-full bg-red text-base font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
         >
           {status === "uploading" ? "Compressing & uploading…" : "Upload"}
         </button>
@@ -84,11 +96,11 @@ export default function UploadSermonPage() {
       {status === "done" && resultUrl && (
         <div className="mt-4 rounded-2xl border border-ink/10 bg-paper-dim p-4">
           <p className="text-sm font-semibold text-ink-muted">Done — copy this into Sanity:</p>
-          <p className="mt-1 break-all text-md text-ink">{resultUrl}</p>
+          <p className="mt-1 break-all text-base text-ink">{resultUrl}</p>
         </div>
       )}
       {status === "error" && errorMsg && (
-        <p className="mt-4 text-md text-red">{errorMsg}</p>
+        <p className="mt-4 text-base text-red">{errorMsg}</p>
       )}
     </main>
   );

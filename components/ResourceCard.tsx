@@ -20,7 +20,7 @@ export default function ResourceCard({ resource }: { resource: ResourceListItem 
         </svg>
       </div>
       <p className="text-sm font-medium text-ink-muted">{resource.category}</p>
-      <p className="mt-1 font-display text-md font-semibold text-ink">{resource.title}</p>
+      <p className="mt-1 font-display text-sm font-semibold text-ink">{resource.title}</p>
       <div className="mt-3 flex items-center justify-between">
         {resource.isFree ? (
           <span className="text-sm font-semibold text-green-700">Free</span>

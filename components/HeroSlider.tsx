@@ -109,7 +109,7 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               >
                 <Link
                   href={slide.ctaHref}
-                  className="mt-7 inline-block rounded-full bg-paper px-6 py-3 text-md font-semibold text-red-deep transition hover:bg-paper/90"
+                  className="mt-7 inline-block rounded-full bg-paper px-6 py-3 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
                 >
                   {slide.ctaLabel}
                 </Link>

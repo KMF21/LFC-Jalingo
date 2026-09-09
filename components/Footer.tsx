@@ -35,12 +35,12 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
         <Reveal>
           <div className="flex items-center gap-2">
            <Image src="/images/lflogo.png" alt="logo" width={26} height={26} />
-            <span className="font-display text-md font-semibold text-paper">
+            <span className="font-display text-sm font-semibold text-paper">
               Living Faith Church, Jalingo
             </span>
           </div>
-          {address && <p className="mt-4 text-md">{address}</p>}
-          <p className="mt-3 text-md">
+          {address && <p className="mt-4 text-sm">{address}</p>}
+          <p className="mt-3 text-sm">
             {facebookUrl ? (
               <a href={facebookUrl} className="hover:text-coral">Facebook</a>
             ) : (
@@ -57,7 +57,7 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
 
         <Reveal delay={0.05}>
           <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Quick Links</p>
-          <ul className="mt-4 flex flex-col gap-2 text-md">
+          <ul className="mt-4 flex flex-col gap-2 text-sm">
             {quickLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-paper">
@@ -70,7 +70,7 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
 
         <Reveal delay={0.1}>
           <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Ministries</p>
-          <ul className="mt-4 flex flex-col gap-2 text-md">
+          <ul className="mt-4 flex flex-col gap-2 text-sm">
             {ministries.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-paper">
@@ -83,7 +83,7 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
 
         <Reveal delay={0.15}>
           <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Service Times</p>
-          <ul className="mt-4 flex flex-col gap-2 text-md">
+          <ul className="mt-4 flex flex-col gap-2 text-sm">
             {(serviceTimes || []).map((s) => (
               <li key={s.label}>
                 {s.label} &middot; {s.time}

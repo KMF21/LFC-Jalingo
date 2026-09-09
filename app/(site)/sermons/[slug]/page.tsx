@@ -1,10 +1,13 @@
 import PageHero from "@/components/PageHero";
 import AudioPlayer from "@/components/AudioPlayer";
 import Reveal from "@/components/Reveal";
-import { SERMON_BY_SLUG_QUERY, sanityClient } from "@/lib/sanity";
+import { safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import { SERMON_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { blocksToParagraphs } from "@/lib/portableText";
 
-type Props = { params: { slug: string } };
+// Next.js 15+ made dynamic route params async — must be awaited,
+// not accessed directly as params.slug.
+type Props = { params: Promise<{ slug: string }> };
 
 type SermonDetail = {
   title: string;
@@ -32,18 +35,14 @@ const fallbackSermon: SermonDetail = {
 };
 
 async function getSermon(slug: string): Promise<SermonDetail> {
-  try {
-    const data = await sanityClient.fetch<any>(SERMON_BY_SLUG_QUERY, { slug });
-    if (!data) return fallbackSermon;
-    return { ...data, body: blocksToParagraphs(data.body) };
-  } catch (err) {
-    console.error("Sanity fetch failed, using fallback content:", err);
-    return fallbackSermon;
-  }
+  const data = await safeSanityFetchOne<any>(SERMON_BY_SLUG_QUERY, { slug });
+  if (!data) return fallbackSermon;
+  return { ...data, body: blocksToParagraphs(data.body) };
 }
 
 export default async function SermonDetailPage({ params }: Props) {
-  const sermon = await getSermon(params.slug);
+  const { slug } = await params;
+  const sermon = await getSermon(slug);
 
   return (
     <main>
@@ -58,7 +57,7 @@ export default async function SermonDetailPage({ params }: Props) {
           {sermon.audioUrl ? (
             <AudioPlayer src={sermon.audioUrl} initialDuration={sermon.durationSeconds} />
           ) : (
-            <p className="rounded-2xl border border-ink/10 bg-paper-dim px-4 py-3 text-md text-ink-muted">
+            <p className="rounded-2xl border border-ink/10 bg-paper-dim px-4 py-3 text-sm text-ink-muted">
               Audio coming soon.
             </p>
           )}

@@ -41,7 +41,7 @@ export default function BankAccountsList({ accounts, narrationHint }: { accounts
                 {a.label ? `${a.label} · ` : ""}
                 {a.bankName}
               </p>
-              <p className="mt-0.5 text-md text-ink-muted">{a.accountNumber}</p>
+              <p className="mt-0.5 text-sm text-ink-muted">{a.accountNumber}</p>
               <p className="text-sm text-ink-muted">{a.accountName}</p>
             </div>
             <button

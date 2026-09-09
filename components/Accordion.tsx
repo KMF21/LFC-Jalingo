@@ -17,7 +17,7 @@ export default function Accordion({ items }: { items: AccordionItem[] }) {
             <button
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-4 bg-red px-5 py-4 text-left text-md font-semibold text-paper transition hover:bg-red-deep"
+              className="flex w-full items-center justify-between gap-4 bg-red px-5 py-4 text-left text-sm font-semibold text-paper transition hover:bg-red-deep"
             >
               {item.question}
               <motion.span
@@ -39,7 +39,7 @@ export default function Accordion({ items }: { items: AccordionItem[] }) {
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="bg-paper-dim"
                 >
-                  <p className="px-5 py-4 text-md text-ink-muted">{item.answer}</p>
+                  <p className="px-5 py-4 text-sm text-ink-muted">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

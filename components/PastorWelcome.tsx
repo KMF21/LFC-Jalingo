@@ -34,7 +34,7 @@ export default function PastorWelcome({ pastor }: { pastor: PastorWelcomeData | 
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink-muted">
             &ldquo;{pastor.welcomeMessage}&rdquo;
           </p>
-          <p className="mt-4 font-display text-md font-semibold text-ink">
+          <p className="mt-4 font-display text-sm font-semibold text-ink">
             {pastor.name} <span className="font-normal text-ink-muted">&middot; {pastor.role}</span>
           </p>
         </Reveal>

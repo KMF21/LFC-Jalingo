@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
 import SermonCard, { SermonListItem } from "@/components/SermonCard";
-import { safeFetch, SERMONS_LIST_QUERY } from "@/lib/sanity";
+import { safeSanityFetch } from "@/sanity/lib/safe-fetch";
+import { SERMONS_LIST_QUERY } from "@/sanity/lib/queries";
 
 // Fallback — used until real sermons exist in Sanity (see lib/sanity.ts's
 // safeFetch for how the swap-over works).
@@ -13,7 +14,7 @@ const fallbackSermons: SermonListItem[] = [
 const filters = ["All", "Sunday Service", "Midweek", "Youth Alive", "Guest Ministers"];
 
 export default async function SermonsPage() {
-  const sermons = await safeFetch<SermonListItem[]>(SERMONS_LIST_QUERY, fallbackSermons);
+  const sermons = await safeSanityFetch<SermonListItem[]>(SERMONS_LIST_QUERY, fallbackSermons);
 
   return (
     <main>
@@ -28,7 +29,7 @@ export default async function SermonsPage() {
           <input
             type="text"
             placeholder="Search sermons"
-            className="w-full bg-transparent text-md text-ink placeholder:text-ink-muted focus:outline-none"
+            className="w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
           />
         </div>
         <div className="flex flex-wrap gap-2">

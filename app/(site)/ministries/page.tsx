@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
 import FeatureRow from "@/components/FeatureRow";
-import { safeFetch, MINISTRIES_LIST_QUERY } from "@/lib/sanity";
+import { safeSanityFetch } from "@/sanity/lib/safe-fetch";
+import { MINISTRIES_LIST_QUERY } from "@/sanity/lib/queries";
 
 type MinistryFromSanity = {
   slug: string;
@@ -21,7 +22,7 @@ const fallbackMinistries: MinistryFromSanity[] = [
 ];
 
 export default async function MinistriesPage() {
-  const ministries = await safeFetch<MinistryFromSanity[]>(MINISTRIES_LIST_QUERY, fallbackMinistries);
+  const ministries = await safeSanityFetch<MinistryFromSanity[]>(MINISTRIES_LIST_QUERY, fallbackMinistries);
 
   return (
     <main>

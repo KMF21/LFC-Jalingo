@@ -1,7 +1,8 @@
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Image from "next/image";
-import { MINISTRY_BY_SLUG_QUERY, sanityClient } from "@/lib/sanity";
+import { safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import { MINISTRY_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 
 // 1. Update Props to accept params as a Promise (Next.js 15+)
 type Props = { 
@@ -29,16 +30,8 @@ async function getMinistry(slug: string): Promise<MinistryDetail> {
   // Guard against missing slug values
   if (!slug) return fallbackMinistry;
 
-  try {
-    const data = await sanityClient.fetch<MinistryDetail | null>(
-      MINISTRY_BY_SLUG_QUERY, 
-      { slug }
-    );
-    return data ?? fallbackMinistry;
-  } catch (err) {
-    console.error("Sanity fetch failed, using fallback content:", err);
-    return fallbackMinistry;
-  }
+  const data = await safeSanityFetchOne<MinistryDetail>(MINISTRY_BY_SLUG_QUERY, { slug });
+  return data ?? fallbackMinistry;
 }
 
 export default async function MinistryDetailPage({ params }: Props) {
@@ -75,7 +68,7 @@ export default async function MinistryDetailPage({ params }: Props) {
           {ministry.whatsappGroupLink ? (
             <a
               href={ministry.whatsappGroupLink}
-              className="mt-8 inline-block rounded-full bg-red px-6 py-3 text-md font-semibold text-paper transition hover:bg-red-deep"
+              className="mt-8 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep"
             >
               Join our WhatsApp group
             </a>

@@ -38,6 +38,8 @@
   ],
   "exclude": [
     "node_modules",
-    "sanity"
+    "sanity/schemas",
+    "sanity.config.ts",
+    "sanity.cli.ts"
   ]
 }

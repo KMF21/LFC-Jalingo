@@ -62,7 +62,7 @@ export default function QuickLinksRow() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-red/10 text-red">
                   {item.icon}
                 </span>
-                <span className="mt-4 font-display text-md font-semibold text-ink">{item.label}</span>
+                <span className="mt-4 font-display text-sm font-semibold text-ink">{item.label}</span>
                 <span className="mt-1 text-sm text-ink-muted">{item.blurb}</span>
                 <span className="mt-3 text-sm font-semibold text-red opacity-0 transition group-hover:opacity-100">
                   Go &rarr;

@@ -59,7 +59,7 @@ export default function PaystackButton({ amountNaira, email, reference, onSucces
     <button
       onClick={handlePay}
       disabled={loading}
-      className="w-full rounded-full bg-red px-5 py-3 text-md font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
+      className="w-full rounded-full bg-red px-5 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
     >
       {loading ? "Loading Paystack…" : `Pay ₦${amountNaira.toLocaleString()} with Paystack`}
     </button>

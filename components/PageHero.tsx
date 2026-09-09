@@ -79,7 +79,7 @@ export default function PageHero({
           >
             <Link
               href={ctaHref}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-red px-6 py-3 text-md font-semibold text-paper transition hover:bg-red-deep"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-red px-6 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep"
             >
               {ctaLabel}
               <span aria-hidden="true">&rarr;</span>

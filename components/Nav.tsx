@@ -44,12 +44,12 @@ export default function Nav() {
       <div className="container-content flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
           <Image src="/images/lflogo.png" alt="logo" width={26} height={26} />
-          <span className="font-display text-md font-semibold tracking-wide2 uppercase text-ink">
+          <span className="font-display text-sm font-semibold tracking-wide2 uppercase text-ink">
             LFC Jalingo
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-md font-medium text-ink-muted md:flex">
+        <nav className="hidden items-center gap-7 text-sm font-medium text-ink-muted md:flex">
           {primaryLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition hover:text-red">
               {link.label}
@@ -123,7 +123,7 @@ export default function Nav() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-2 py-3 text-md font-medium text-ink-muted transition hover:bg-paper-dim hover:text-red"
+                  className="rounded-lg px-2 py-3 text-sm font-medium text-ink-muted transition hover:bg-paper-dim hover:text-red"
                 >
                   {link.label}
                 </Link>

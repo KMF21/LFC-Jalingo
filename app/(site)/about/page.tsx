@@ -7,7 +7,8 @@ import Accordion, { AccordionItem } from "@/components/Accordion";
 import Reveal from "@/components/Reveal";
 import Image from "next/image";
 import Link from "next/link";
-import { safeFetch, LEADERS_QUERY, MINISTRY_BY_SLUG_QUERY, sanityClient } from "@/lib/sanity";
+import { safeSanityFetch, safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import { LEADERS_QUERY, MINISTRY_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 
 const anchorNav = [
   { href: "#mission", label: "Our Mission" },
@@ -38,18 +39,14 @@ const beliefs: AccordionItem[] = [
 ];
 
 async function getOutreachGallery(): Promise<(string | null)[]> {
-  try {
-    const data = await sanityClient.fetch<{ galleryUrls?: string[] } | null>(MINISTRY_BY_SLUG_QUERY, { slug: "outreach" });
-    if (data?.galleryUrls && data.galleryUrls.length > 0) return data.galleryUrls.slice(0, 3);
-  } catch (err) {
-    console.error("Sanity fetch failed, using fallback content:", err);
-  }
+  const data = await safeSanityFetchOne<{ galleryUrls?: string[] }>(MINISTRY_BY_SLUG_QUERY, { slug: "outreach" });
+  if (data?.galleryUrls && data.galleryUrls.length > 0) return data.galleryUrls.slice(0, 3);
   return [null, null, null];
 }
 
 export default async function AboutPage() {
   const [leaders, outreachGallery] = await Promise.all([
-    safeFetch<LeaderFromSanity[]>(LEADERS_QUERY, fallbackLeaders),
+    safeSanityFetch<LeaderFromSanity[]>(LEADERS_QUERY, fallbackLeaders),
     getOutreachGallery(),
   ]);
 
@@ -161,12 +158,12 @@ export default async function AboutPage() {
         <div className="container-content flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
           <Reveal>
             <h2 className="font-display text-2xl font-bold text-paper">Want to learn more?</h2>
-            <p className="mt-1 text-md text-paper/85">We&rsquo;d love to hear from you.</p>
+            <p className="mt-1 text-sm text-paper/85">We&rsquo;d love to hear from you.</p>
           </Reveal>
           <Reveal delay={0.1}>
             <Link
               href="/contact"
-              className="inline-block rounded-full bg-ink px-6 py-3 text-md font-semibold text-paper transition hover:bg-black"
+              className="inline-block rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-black"
             >
               Contact form
             </Link>

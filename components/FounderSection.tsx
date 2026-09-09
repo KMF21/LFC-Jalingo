@@ -17,7 +17,7 @@ export default function FounderSection() {
         <Reveal>
           <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Part of a global work</p>
           <h2 className="mt-2 font-display text-2xl font-bold text-ink">Living Faith Church Worldwide</h2>
-          <p className="mt-4 text-md text-ink-muted">
+          <p className="mt-4 text-sm text-ink-muted">
             Living Faith Church, Jalingo is a branch of Living Faith Church Worldwide
             (also known as Winners&rsquo; Chapel International), founded in 1981 by
             Bishop David Oyedepo. The ministry&rsquo;s mandate — received in a vision to
@@ -30,7 +30,7 @@ export default function FounderSection() {
             href="https://faithtabernacle.org.ng/about"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block text-md font-semibold text-red underline decoration-red/40 underline-offset-4 hover:text-red-deep"
+            className="mt-4 inline-block text-sm font-semibold text-red underline decoration-red/40 underline-offset-4 hover:text-red-deep"
           >
             More about the founder &amp; global ministry &rarr;
           </a>

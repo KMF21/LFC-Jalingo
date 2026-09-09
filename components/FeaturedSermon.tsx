@@ -19,7 +19,7 @@ export default function FeaturedSermon({ sermon }: { sermon: FeaturedSermonData 
           <h2 className="mt-2 font-display text-3xl font-bold text-paper md:text-4xl">
             Watch the latest message
           </h2>
-          <p className="mt-3 max-w-md text-md text-paper/70">
+          <p className="mt-3 max-w-md text-sm text-paper/70">
             Stay encouraged with the most recent teaching from Living Faith Church, Jalingo —
             stream it here or download it for later.
           </p>
@@ -28,7 +28,7 @@ export default function FeaturedSermon({ sermon }: { sermon: FeaturedSermonData 
         <Reveal delay={0.1}>
           <div className="rounded-2xl border border-paper/15 bg-paper/5 p-6">
             <h3 className="font-display text-xl font-semibold text-paper">{sermon.title}</h3>
-            <p className="mt-1 text-md text-paper/60">
+            <p className="mt-1 text-sm text-paper/60">
               {sermon.preacher} &middot; {sermon.date}
             </p>
 
@@ -36,7 +36,7 @@ export default function FeaturedSermon({ sermon }: { sermon: FeaturedSermonData 
               {sermon.audioUrl ? (
                 <AudioPlayer src={sermon.audioUrl} initialDuration={sermon.durationSeconds} />
               ) : (
-                <p className="rounded-2xl border border-paper/15 px-4 py-3 text-md text-paper/60">
+                <p className="rounded-2xl border border-paper/15 px-4 py-3 text-sm text-paper/60">
                   Audio coming soon.
                 </p>
               )}

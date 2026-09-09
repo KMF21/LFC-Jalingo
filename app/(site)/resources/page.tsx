@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
 import ResourceCard, { ResourceListItem } from "@/components/ResourceCard";
-import { safeFetch, RESOURCES_LIST_QUERY } from "@/lib/sanity";
+import { safeSanityFetch } from "@/sanity/lib/safe-fetch";
+import { RESOURCES_LIST_QUERY } from "@/sanity/lib/queries";
 
 const fallbackResources: ResourceListItem[] = [
   { slug: "the-miracle-seed", title: "The Miracle Seed", category: "Book", isFree: false, price: 1500 },
@@ -11,7 +12,7 @@ const fallbackResources: ResourceListItem[] = [
 const categories = ["All", "Books", "Devotionals", "Teaching Guides", "Free"];
 
 export default async function ResourcesPage() {
-  const resources = await safeFetch<ResourceListItem[]>(RESOURCES_LIST_QUERY, fallbackResources);
+  const resources = await safeSanityFetch<ResourceListItem[]>(RESOURCES_LIST_QUERY, fallbackResources);
 
   return (
     <main>

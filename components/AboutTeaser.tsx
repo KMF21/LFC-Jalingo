@@ -26,7 +26,7 @@ export default function AboutTeaser() {
           </p>
           <Link
             href="/about"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-md font-semibold text-red-deep transition hover:bg-paper/90"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
           >
             More about us
             <span aria-hidden="true">&rarr;</span>

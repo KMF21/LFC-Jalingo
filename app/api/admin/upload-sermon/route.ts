@@ -6,11 +6,20 @@ import { uploadSermonAudio } from "@/lib/r2";
 // binary that Edge functions can't execute.
 export const runtime = "nodejs";
 
-// TODO: this route is unauthenticated in the scaffold. Before this goes
-// live, gate it behind whatever admin auth the church site ends up using
-// (a simple shared-secret header is enough for a small church team — full
-// user accounts are almost certainly overkill here).
+function isAuthorized(req: NextRequest): boolean {
+  const configuredSecret = process.env.ADMIN_UPLOAD_SECRET;
+  // Fail CLOSED, not open: if the secret isn't configured at all, nobody
+  // can upload — an unset env var must never be read as "auth disabled."
+  if (!configuredSecret) return false;
+  const provided = req.headers.get("x-admin-secret");
+  return provided === configuredSecret;
+}
+
 export async function POST(req: NextRequest) {
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const formData = await req.formData();
     const file = formData.get("audio");

@@ -28,7 +28,7 @@ export default function PillarsGrid() {
                 <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" />
               </svg>
             </div>
-            <p className="mt-3 font-display text-md font-semibold text-ink">{p.label}</p>
+            <p className="mt-3 font-display text-sm font-semibold text-ink">{p.label}</p>
             <p className="mt-1 text-sm text-ink-muted">{p.blurb}</p>
           </motion.div>
         ))}

@@ -41,7 +41,7 @@ export default function InvolvementGrid() {
                 className="group flex h-full flex-col rounded-2xl border border-ink/10 bg-paper p-6 transition hover:-translate-y-0.5 hover:border-red hover:shadow-sm"
               >
                 <h3 className="font-display text-lg font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-md text-ink-muted">{s.description}</p>
+                <p className="mt-2 text-sm text-ink-muted">{s.description}</p>
                 <span className="mt-4 text-sm font-semibold text-red opacity-0 transition group-hover:opacity-100">
                   Learn more &rarr;
                 </span>

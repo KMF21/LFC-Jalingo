@@ -17,7 +17,7 @@ export default function MinistriesTeaser() {
               className="group flex min-h-[180px] flex-col justify-end rounded-2xl bg-ink p-7 transition hover:brightness-110"
             >
               <h3 className="font-display text-2xl font-bold text-paper">Youth Alive Fellowship</h3>
-              <p className="mt-2 max-w-md text-md text-paper/70">
+              <p className="mt-2 max-w-md text-sm text-paper/70">
                 Empowering young people in faith, purpose, and community.
               </p>
               <span className="mt-4 text-sm font-semibold text-coral opacity-0 transition group-hover:opacity-100">
@@ -57,7 +57,7 @@ export default function MinistriesTeaser() {
               className="group flex min-h-[120px] flex-col justify-center rounded-2xl border-2 border-red p-7 transition hover:bg-red/5"
             >
               <h3 className="font-display text-xl font-semibold text-ink">Outreach &amp; Community Impact</h3>
-              <p className="mt-1 text-md text-ink-muted">
+              <p className="mt-1 text-sm text-ink-muted">
                 Grain distribution, medical outreach, and community walks across Jalingo.
               </p>
             </Link>
@@ -67,7 +67,7 @@ export default function MinistriesTeaser() {
         <Reveal delay={0.25}>
           <Link
             href="/ministries"
-            className="mt-6 inline-block text-md font-semibold text-red underline decoration-red/40 underline-offset-4 hover:text-red-deep"
+            className="mt-6 inline-block text-sm font-semibold text-red underline decoration-red/40 underline-offset-4 hover:text-red-deep"
           >
             View all ministries
           </Link>

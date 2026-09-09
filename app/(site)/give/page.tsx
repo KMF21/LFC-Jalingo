@@ -2,7 +2,8 @@ import PageHero from "@/components/PageHero";
 import PaystackButton from "@/components/PaystackButton";
 import BankAccountsList, { BankAccount } from "@/components/BankAccountsList";
 import Reveal from "@/components/Reveal";
-import { safeFetch, BANK_ACCOUNTS_QUERY } from "@/lib/sanity";
+import { safeSanityFetch } from "@/sanity/lib/safe-fetch";
+import { BANK_ACCOUNTS_QUERY } from "@/sanity/lib/queries";
 
 const fallbackBankAccounts: BankAccount[] = [
   { bankName: "GTBank", accountName: "Living Faith Church Jalingo", accountNumber: "0123456789", label: "General account" },
@@ -10,7 +11,7 @@ const fallbackBankAccounts: BankAccount[] = [
 ];
 
 export default async function GivePage() {
-  const bankAccounts = await safeFetch<BankAccount[]>(BANK_ACCOUNTS_QUERY, fallbackBankAccounts);
+  const bankAccounts = await safeSanityFetch<BankAccount[]>(BANK_ACCOUNTS_QUERY, fallbackBankAccounts);
 
   return (
     <main>

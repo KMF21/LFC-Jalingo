@@ -8,12 +8,21 @@ import FeaturedSermon, { FeaturedSermonData } from "@/components/FeaturedSermon"
 import InvolvementGrid from "@/components/InvolvementGrid";
 import GivingBand from "@/components/GivingBand";
 import PastorWelcome, { PastorWelcomeData } from "@/components/PastorWelcome";
-import { safeFetch, HOMEPAGE_HERO_QUERY, FEATURED_SERMON_QUERY, UPCOMING_EVENTS_QUERY, SITE_SETTINGS_QUERY, SiteSettings, FALLBACK_SITE_SETTINGS, PASTOR_WELCOME_QUERY, sanityClient } from "@/lib/sanity";
+import { safeSanityFetch, safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
+import {
+  HOMEPAGE_HERO_QUERY,
+  FEATURED_SERMON_QUERY,
+  UPCOMING_EVENTS_QUERY,
+  SITE_SETTINGS_QUERY,
+  SiteSettings,
+  FALLBACK_SITE_SETTINGS,
+  PASTOR_WELCOME_QUERY,
+} from "@/sanity/lib/queries";
 
 // Fallback content — used until a real Sanity project + real documents
 // exist (see .env.example and the "Design system" section of the README).
 // Once real heroSlide/sermon/event documents are published, these are
-// never reached; safeFetch only falls back on an empty/failed query.
+// never reached; safeSanityFetch only falls back on an empty/failed query.
 const fallbackHeroSlides: HeroSlide[] = [
   {
     _key: "1",
@@ -52,14 +61,14 @@ const fallbackEvents: EventItem[] = [
 
 export default async function HomePage() {
   const [heroSlides, featuredSermon, events, siteSettings, pastorWelcome] = await Promise.all([
-    safeFetch<HeroSlide[]>(HOMEPAGE_HERO_QUERY, fallbackHeroSlides),
-    safeFetch<FeaturedSermonData>(FEATURED_SERMON_QUERY, fallbackFeaturedSermon),
-    safeFetch<EventItem[]>(UPCOMING_EVENTS_QUERY, fallbackEvents),
-    safeFetch<SiteSettings>(SITE_SETTINGS_QUERY, FALLBACK_SITE_SETTINGS),
-    // Not safeFetch: there is no placeholder content for this one, by
+    safeSanityFetch<HeroSlide[]>(HOMEPAGE_HERO_QUERY, fallbackHeroSlides),
+    safeSanityFetch<FeaturedSermonData>(FEATURED_SERMON_QUERY, fallbackFeaturedSermon),
+    safeSanityFetch<EventItem[]>(UPCOMING_EVENTS_QUERY, fallbackEvents),
+    safeSanityFetch<SiteSettings>(SITE_SETTINGS_QUERY, FALLBACK_SITE_SETTINGS),
+    // Not safeSanityFetch: there is no placeholder content for this one, by
     // design — PastorWelcome renders nothing until a real, approved
     // message exists (see components/PastorWelcome.tsx).
-    sanityClient.fetch<PastorWelcomeData | null>(PASTOR_WELCOME_QUERY).catch(() => null),
+    safeSanityFetchOne<PastorWelcomeData>(PASTOR_WELCOME_QUERY, {}),
   ]);
 
   return (
