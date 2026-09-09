@@ -37,14 +37,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
-        <Nav />
+
         {children}
-        <Footer
-          address={siteSettings.address}
-          serviceTimes={siteSettings.serviceTimes}
-          facebookUrl={siteSettings.facebookUrl}
-          whatsappUrl={siteSettings.whatsappUrl}
-        />
+
         {/* Powers the Live Content API's real-time subscription — must be
             mounted once, here, so any page using sanityFetch gets pushed
             updates when content changes in Studio. */}
