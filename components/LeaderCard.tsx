@@ -14,8 +14,8 @@ export default function LeaderCard({ leader }: { leader: LeaderData }) {
         ) : null}
       </div>
       <div>
-        <p className="font-display text-sm font-semibold text-ink">{leader.name}</p>
-        <p className="text-xs text-ink-muted">{leader.role}</p>
+        <p className="font-display text-md font-semibold text-ink">{leader.name}</p>
+        <p className="text-sm text-ink-muted">{leader.role}</p>
       </div>
     </div>
   );

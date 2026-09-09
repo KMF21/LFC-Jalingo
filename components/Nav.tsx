@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import FlameMark from "./FlameMark";
+import Image from "next/image";
 
 const primaryLinks = [
   { href: "/about", label: "About" },
@@ -42,13 +43,13 @@ export default function Nav() {
     >
       <div className="container-content flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-          <FlameMark size={28} />
-          <span className="font-display text-sm font-semibold tracking-wide2 uppercase text-ink">
+          <Image src="/images/lflogo.png" alt="logo" width={26} height={26} />
+          <span className="font-display text-md font-semibold tracking-wide2 uppercase text-ink">
             LFC Jalingo
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-ink-muted md:flex">
+        <nav className="hidden items-center gap-7 text-md font-medium text-ink-muted md:flex">
           {primaryLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition hover:text-red">
               {link.label}
@@ -59,13 +60,13 @@ export default function Nav() {
         <div className="flex items-center gap-3">
           <Link
             href="/prayer-request"
-            className="hidden text-xs font-semibold text-ink-muted transition hover:text-red sm:inline-block"
+            className="hidden text-sm font-semibold text-ink-muted transition hover:text-red sm:inline-block"
           >
             Prayer request
           </Link>
           <Link
             href="/visit"
-            className="hidden rounded-full bg-red px-4 py-2 text-xs font-bold uppercase tracking-wide text-paper transition hover:bg-red-deep sm:inline-block"
+            className="hidden rounded-full bg-red px-4 py-2 text-sm font-bold uppercase tracking-wide text-paper transition hover:bg-red-deep sm:inline-block"
           >
             Plan a visit
           </Link>
@@ -122,7 +123,7 @@ export default function Nav() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-2 py-3 text-sm font-medium text-ink-muted transition hover:bg-paper-dim hover:text-red"
+                  className="rounded-lg px-2 py-3 text-md font-medium text-ink-muted transition hover:bg-paper-dim hover:text-red"
                 >
                   {link.label}
                 </Link>
@@ -131,14 +132,14 @@ export default function Nav() {
                 <Link
                   href="/prayer-request"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-full border border-ink/15 px-4 py-2.5 text-center text-xs font-semibold text-ink transition hover:border-red hover:text-red"
+                  className="rounded-full border border-ink/15 px-4 py-2.5 text-center text-sm font-semibold text-ink transition hover:border-red hover:text-red"
                 >
                   Prayer request
                 </Link>
                 <Link
                   href="/visit"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-full bg-red px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wide text-paper transition hover:bg-red-deep"
+                  className="rounded-full bg-red px-4 py-2.5 text-center text-sm font-bold uppercase tracking-wide text-paper transition hover:bg-red-deep"
                 >
                   Plan a visit
                 </Link>

@@ -75,12 +75,12 @@ export default async function MinistryDetailPage({ params }: Props) {
           {ministry.whatsappGroupLink ? (
             <a
               href={ministry.whatsappGroupLink}
-              className="mt-8 inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep"
+              className="mt-8 inline-block rounded-full bg-red px-6 py-3 text-md font-semibold text-paper transition hover:bg-red-deep"
             >
               Join our WhatsApp group
             </a>
           ) : (
-            <p className="mt-8 text-xs text-ink-muted">WhatsApp group link coming soon.</p>
+            <p className="mt-8 text-sm text-ink-muted">WhatsApp group link coming soon.</p>
           )}
         </Reveal>
       </section>

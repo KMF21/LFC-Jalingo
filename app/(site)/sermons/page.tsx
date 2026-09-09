@@ -28,14 +28,14 @@ export default async function SermonsPage() {
           <input
             type="text"
             placeholder="Search sermons"
-            className="w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
+            className="w-full bg-transparent text-md text-ink placeholder:text-ink-muted focus:outline-none"
           />
         </div>
         <div className="flex flex-wrap gap-2">
           {filters.map((f, i) => (
             <span
               key={f}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
+              className={`rounded-full px-3 py-1.5 text-sm font-semibold ${
                 i === 0 ? "bg-red text-paper" : "border border-ink/15 text-ink-muted"
               }`}
             >

@@ -30,11 +30,11 @@ export default function PastorWelcome({ pastor }: { pastor: PastorWelcomeData | 
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">A welcome from our pastor</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-red">A welcome from our pastor</p>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink-muted">
             &ldquo;{pastor.welcomeMessage}&rdquo;
           </p>
-          <p className="mt-4 font-display text-sm font-semibold text-ink">
+          <p className="mt-4 font-display text-md font-semibold text-ink">
             {pastor.name} <span className="font-normal text-ink-muted">&middot; {pastor.role}</span>
           </p>
         </Reveal>

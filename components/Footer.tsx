@@ -2,6 +2,7 @@ import Link from "next/link";
 import FlameMark from "./FlameMark";
 import Reveal from "./Reveal";
 import type { ServiceTime } from "@/sanity/lib/queries";
+import Image from "next/image";
 
 const quickLinks = [
   { href: "/sermons", label: "Sermons" },
@@ -33,13 +34,13 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
       <div className="container-content grid grid-cols-1 gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-4">
         <Reveal>
           <div className="flex items-center gap-2">
-            <FlameMark size={26} />
-            <span className="font-display text-sm font-semibold text-paper">
+           <Image src="/images/lflogo.png" alt="logo" width={26} height={26} />
+            <span className="font-display text-md font-semibold text-paper">
               Living Faith Church, Jalingo
             </span>
           </div>
-          {address && <p className="mt-4 text-sm">{address}</p>}
-          <p className="mt-3 text-sm">
+          {address && <p className="mt-4 text-md">{address}</p>}
+          <p className="mt-3 text-md">
             {facebookUrl ? (
               <a href={facebookUrl} className="hover:text-coral">Facebook</a>
             ) : (
@@ -55,8 +56,8 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
         </Reveal>
 
         <Reveal delay={0.05}>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Quick Links</p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Quick Links</p>
+          <ul className="mt-4 flex flex-col gap-2 text-md">
             {quickLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-paper">
@@ -68,8 +69,8 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Ministries</p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Ministries</p>
+          <ul className="mt-4 flex flex-col gap-2 text-md">
             {ministries.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-paper">
@@ -81,8 +82,8 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
         </Reveal>
 
         <Reveal delay={0.15}>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Service Times</p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Service Times</p>
+          <ul className="mt-4 flex flex-col gap-2 text-md">
             {(serviceTimes || []).map((s) => (
               <li key={s.label}>
                 {s.label} &middot; {s.time}
@@ -94,7 +95,7 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
       </div>
 
       <div className="border-t border-paper/10">
-        <div className="container-content flex flex-col gap-2 py-5 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="container-content flex flex-col gap-2 py-5 text-sm sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} Living Faith Church, Jalingo</span>
           <span>Part of Living Faith Church Worldwide</span>
         </div>

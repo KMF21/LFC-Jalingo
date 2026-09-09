@@ -71,7 +71,7 @@ export default async function AboutPage() {
               <a
                 key={a.href}
                 href={a.href}
-                className="rounded-xl border border-ink/10 bg-paper-dim px-3 py-4 text-center text-xs font-semibold text-ink transition hover:border-red hover:text-red"
+                className="rounded-xl border border-ink/10 bg-paper-dim px-3 py-4 text-center text-sm font-semibold text-ink transition hover:border-red hover:text-red"
               >
                 {a.label}
               </a>
@@ -99,7 +99,7 @@ export default async function AboutPage() {
       <section id="leadership" className="scroll-mt-20 bg-paper-dim py-16">
         <div className="container-content max-w-2xl">
           <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Our leadership</p>
+            <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Our leadership</p>
             <h2 className="mt-2 font-display text-3xl font-bold text-ink">Leadership team</h2>
           </Reveal>
 
@@ -117,7 +117,7 @@ export default async function AboutPage() {
           {staff.length > 0 && (
             <div className="mt-12">
               <Reveal>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-wide2 text-red">Staff</p>
+                <p className="mb-4 text-sm font-semibold uppercase tracking-wide2 text-red">Staff</p>
               </Reveal>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {staff.map((l) => (
@@ -131,7 +131,7 @@ export default async function AboutPage() {
 
       <section id="beliefs" className="container-content max-w-2xl scroll-mt-20 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Our beliefs</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Our beliefs</p>
           <h2 className="mt-2 font-display text-3xl font-bold text-ink">What we believe</h2>
         </Reveal>
         <div className="mt-8">
@@ -141,7 +141,7 @@ export default async function AboutPage() {
 
       <section className="container-content max-w-2xl pb-16">
         <Reveal>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wide2 text-red">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-wide2 text-red">
             Outreach &amp; community impact
           </p>
           <div className="grid grid-cols-3 gap-3">
@@ -151,7 +151,7 @@ export default async function AboutPage() {
               </div>
             ))}
           </div>
-          <p className="mt-3 text-xs text-ink-muted">
+          <p className="mt-3 text-sm text-ink-muted">
             Grain distribution, medical outreach, and community walks across Jalingo.
           </p>
         </Reveal>
@@ -161,12 +161,12 @@ export default async function AboutPage() {
         <div className="container-content flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
           <Reveal>
             <h2 className="font-display text-2xl font-bold text-paper">Want to learn more?</h2>
-            <p className="mt-1 text-sm text-paper/85">We&rsquo;d love to hear from you.</p>
+            <p className="mt-1 text-md text-paper/85">We&rsquo;d love to hear from you.</p>
           </Reveal>
           <Reveal delay={0.1}>
             <Link
               href="/contact"
-              className="inline-block rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-black"
+              className="inline-block rounded-full bg-ink px-6 py-3 text-md font-semibold text-paper transition hover:bg-black"
             >
               Contact form
             </Link>

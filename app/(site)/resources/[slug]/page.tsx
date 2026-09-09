@@ -54,7 +54,7 @@ export default async function ResourceDetailPage({ params }: Props) {
           <Reveal>
             <a
               href={resource.fileUrl}
-              className="inline-block rounded-full bg-red px-6 py-3 text-sm font-semibold text-paper transition hover:bg-red-deep"
+              className="inline-block rounded-full bg-red px-6 py-3 text-md font-semibold text-paper transition hover:bg-red-deep"
             >
               Download free
             </a>
@@ -63,7 +63,7 @@ export default async function ResourceDetailPage({ params }: Props) {
           <Reveal>
             <div className="overflow-hidden rounded-2xl border border-ink/10">
               <div className="bg-red-gradient px-6 py-6 text-center">
-                <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Price</p>
+                <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Price</p>
                 <p className="mt-1 font-display text-3xl font-bold text-paper">
                   &#8358;{(resource.price ?? 0).toLocaleString()}
                 </p>
@@ -74,7 +74,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                   email="member@example.com"
                   reference={`${params.slug}-${Date.now()}`}
                 />
-                <div className="flex items-center gap-3 text-xs text-ink-muted">
+                <div className="flex items-center gap-3 text-sm text-ink-muted">
                   <span className="h-px flex-1 bg-ink/10" />
                   or
                   <span className="h-px flex-1 bg-ink/10" />

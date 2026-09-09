@@ -26,12 +26,12 @@ export default function SermonCard({ sermon }: { sermon: SermonListItem }) {
         )}
       </div>
       <div className="flex-1">
-        <p className="font-display text-sm font-semibold text-ink">{sermon.title}</p>
-        <p className="mt-1 text-xs text-ink-muted">
+        <p className="font-display text-md font-semibold text-ink">{sermon.title}</p>
+        <p className="mt-1 text-sm text-ink-muted">
           {sermon.preacher} &middot; {sermon.date} &middot; {sermon.hasVideo ? "audio + video" : "audio"}
         </p>
       </div>
-      <span className="text-xs font-semibold text-red opacity-0 transition group-hover:opacity-100">
+      <span className="text-sm font-semibold text-red opacity-0 transition group-hover:opacity-100">
         View &rarr;
       </span>
     </Link>

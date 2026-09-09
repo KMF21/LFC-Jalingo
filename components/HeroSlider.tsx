@@ -76,7 +76,7 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="mb-4 inline-block w-max rounded-full border border-paper/40 px-3 py-1 text-xs font-semibold text-paper"
+              className="mb-4 inline-block w-max rounded-full border border-paper/40 px-3 py-1 text-sm font-semibold text-paper"
             >
               Living Faith Church, Jalingo
             </motion.span>
@@ -109,7 +109,7 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               >
                 <Link
                   href={slide.ctaHref}
-                  className="mt-7 inline-block rounded-full bg-paper px-6 py-3 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
+                  className="mt-7 inline-block rounded-full bg-paper px-6 py-3 text-md font-semibold text-red-deep transition hover:bg-paper/90"
                 >
                   {slide.ctaLabel}
                 </Link>
@@ -122,13 +122,13 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       <div className="absolute right-6 top-6 z-10 hidden gap-2 sm:flex">
         <Link
           href="/prayer-request"
-          className="rounded-full border border-paper/50 bg-red-deep/30 px-4 py-2 text-xs font-semibold text-paper backdrop-blur transition hover:bg-paper hover:text-red-deep"
+          className="rounded-full border border-paper/50 bg-red-deep/30 px-4 py-2 text-sm font-semibold text-paper backdrop-blur transition hover:bg-paper hover:text-red-deep"
         >
           Prayer request
         </Link>
         <Link
           href="/visit"
-          className="rounded-full bg-paper px-4 py-2 text-xs font-semibold text-red-deep transition hover:bg-paper/90"
+          className="rounded-full bg-paper px-4 py-2 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
         >
           Plan a visit
         </Link>

@@ -71,7 +71,7 @@ export default function AudioPlayer({ src, initialDuration }: { src: string; ini
         onChange={seek}
         className="h-1 flex-1 accent-red"
       />
-      <span className="w-20 shrink-0 text-right text-xs text-ink-muted">
+      <span className="w-20 shrink-0 text-right text-sm text-ink-muted">
         {formatTime(current)} / {formatTime(duration)}
       </span>
     </div>

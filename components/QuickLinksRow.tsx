@@ -50,7 +50,7 @@ export default function QuickLinksRow() {
     <section className="border-b border-ink/10 bg-paper py-14">
       <div className="container-content">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Find the right next step</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Find the right next step</p>
         </Reveal>
         <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {items.map((item, i) => (
@@ -62,9 +62,9 @@ export default function QuickLinksRow() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-red/10 text-red">
                   {item.icon}
                 </span>
-                <span className="mt-4 font-display text-sm font-semibold text-ink">{item.label}</span>
-                <span className="mt-1 text-xs text-ink-muted">{item.blurb}</span>
-                <span className="mt-3 text-xs font-semibold text-red opacity-0 transition group-hover:opacity-100">
+                <span className="mt-4 font-display text-md font-semibold text-ink">{item.label}</span>
+                <span className="mt-1 text-sm text-ink-muted">{item.blurb}</span>
+                <span className="mt-3 text-sm font-semibold text-red opacity-0 transition group-hover:opacity-100">
                   Go &rarr;
                 </span>
               </Link>

@@ -15,7 +15,7 @@ export default function AboutTeaser() {
 
       <div className="container-content relative text-center">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">About Living Faith Church</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">About Living Faith Church</p>
           <h2 className="mx-auto mt-3 max-w-lg font-display text-3xl font-bold text-paper md:text-4xl">
             A glimpse into who we are
           </h2>
@@ -26,7 +26,7 @@ export default function AboutTeaser() {
           </p>
           <Link
             href="/about"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-md font-semibold text-red-deep transition hover:bg-paper/90"
           >
             More about us
             <span aria-hidden="true">&rarr;</span>

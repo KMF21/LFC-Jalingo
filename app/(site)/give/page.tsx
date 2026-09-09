@@ -25,7 +25,7 @@ export default async function GivePage() {
         <Reveal>
           <div className="overflow-hidden rounded-2xl border border-ink/10">
             <div className="bg-red-gradient px-6 py-8 text-center">
-              <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Living Faith Church, Jalingo</p>
+              <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Living Faith Church, Jalingo</p>
               <p className="mt-2 font-display text-2xl font-bold text-paper">Every seed counts</p>
             </div>
             <div className="space-y-6 bg-paper-dim p-6">
@@ -34,7 +34,7 @@ export default async function GivePage() {
                 email="member@example.com"
                 reference={`giving-${Date.now()}`}
               />
-              <div className="flex items-center gap-3 text-xs text-ink-muted">
+              <div className="flex items-center gap-3 text-sm text-ink-muted">
                 <span className="h-px flex-1 bg-ink/10" />
                 or
                 <span className="h-px flex-1 bg-ink/10" />

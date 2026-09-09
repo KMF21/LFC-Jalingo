@@ -27,11 +27,11 @@ export default function FeatureRow({ title, accentWord, description, imageUrl, c
           <h3 className="font-display text-2xl font-bold text-ink">
             {title} {accentWord && <span className="text-red">{accentWord}</span>}
           </h3>
-          <p className="mt-3 text-sm text-ink-muted">{description}</p>
+          <p className="mt-3 text-md text-ink-muted">{description}</p>
           {ctaLabel && ctaHref && (
             <Link
               href={ctaHref}
-              className="mt-4 inline-flex w-max items-center gap-2 rounded-full bg-red px-4 py-2 text-xs font-semibold text-paper transition hover:bg-red-deep"
+              className="mt-4 inline-flex w-max items-center gap-2 rounded-full bg-red px-4 py-2 text-sm font-semibold text-paper transition hover:bg-red-deep"
             >
               {ctaLabel}
               <span aria-hidden="true">&rarr;</span>

@@ -33,49 +33,49 @@ export default function UploadSermonPage() {
 
   return (
     <main className="container-content max-w-lg py-12">
-      <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Admin</p>
+      <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Admin</p>
       <h1 className="mt-2 font-display text-2xl font-bold text-ink">Upload sermon audio</h1>
-      <p className="mt-2 text-sm text-ink-muted">
+      <p className="mt-2 text-md text-ink-muted">
         Pick the raw sermon file — it&rsquo;ll be compressed and stored automatically.
         Copy the link this gives you into the sermon&rsquo;s &ldquo;Audio URL&rdquo; field in
         Sanity Studio.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3 rounded-2xl border border-ink/10 bg-paper-dim p-6">
-        <label className="text-xs font-semibold text-ink-muted">
+        <label className="text-sm font-semibold text-ink-muted">
           Sermon file (any common audio format)
           <input
             required
             type="file"
             name="audio"
             accept="audio/*"
-            className="mt-1 block w-full text-sm"
+            className="mt-1 block w-full text-md"
           />
         </label>
-        <label className="text-xs font-semibold text-ink-muted">
+        <label className="text-sm font-semibold text-ink-muted">
           Slug (used in the file name — e.g. gateways-to-financial-dominion)
           <input
             required
             type="text"
             name="slug"
             placeholder="gateways-to-financial-dominion"
-            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
+            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-md text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
           />
         </label>
-        <label className="text-xs font-semibold text-ink-muted">
+        <label className="text-sm font-semibold text-ink-muted">
           Year preached
           <input
             type="number"
             name="year"
             defaultValue={new Date().getFullYear()}
-            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
+            className="mt-1 h-11 w-full rounded-full border border-ink/15 bg-paper px-4 text-md text-ink focus:outline-none focus:ring-2 focus:ring-red/30"
           />
         </label>
 
         <button
           type="submit"
           disabled={status === "uploading"}
-          className="mt-2 h-11 rounded-full bg-red text-sm font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
+          className="mt-2 h-11 rounded-full bg-red text-md font-semibold text-paper transition hover:bg-red-deep disabled:opacity-60"
         >
           {status === "uploading" ? "Compressing & uploading…" : "Upload"}
         </button>
@@ -83,12 +83,12 @@ export default function UploadSermonPage() {
 
       {status === "done" && resultUrl && (
         <div className="mt-4 rounded-2xl border border-ink/10 bg-paper-dim p-4">
-          <p className="text-xs font-semibold text-ink-muted">Done — copy this into Sanity:</p>
-          <p className="mt-1 break-all text-sm text-ink">{resultUrl}</p>
+          <p className="text-sm font-semibold text-ink-muted">Done — copy this into Sanity:</p>
+          <p className="mt-1 break-all text-md text-ink">{resultUrl}</p>
         </div>
       )}
       {status === "error" && errorMsg && (
-        <p className="mt-4 text-sm text-red">{errorMsg}</p>
+        <p className="mt-4 text-md text-red">{errorMsg}</p>
       )}
     </main>
   );

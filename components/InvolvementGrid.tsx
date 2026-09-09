@@ -29,7 +29,7 @@ export default function InvolvementGrid() {
     <section className="bg-paper-dim py-16">
       <div className="container-content">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Take a step</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Take a step</p>
           <h2 className="mt-2 font-display text-3xl font-bold text-ink">How to get involved</h2>
         </Reveal>
 
@@ -41,8 +41,8 @@ export default function InvolvementGrid() {
                 className="group flex h-full flex-col rounded-2xl border border-ink/10 bg-paper p-6 transition hover:-translate-y-0.5 hover:border-red hover:shadow-sm"
               >
                 <h3 className="font-display text-lg font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-sm text-ink-muted">{s.description}</p>
-                <span className="mt-4 text-xs font-semibold text-red opacity-0 transition group-hover:opacity-100">
+                <p className="mt-2 text-md text-ink-muted">{s.description}</p>
+                <span className="mt-4 text-sm font-semibold text-red opacity-0 transition group-hover:opacity-100">
                   Learn more &rarr;
                 </span>
               </Link>

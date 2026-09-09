@@ -16,7 +16,7 @@ export default function EventsRow({ events }: { events: EventItem[] }) {
     <section className="border-b border-ink/10 bg-paper py-16">
       <div className="container-content">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Upcoming</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Upcoming</p>
           <h2 className="mt-2 font-display text-3xl font-bold text-ink">Happening at LFC Jalingo</h2>
         </Reveal>
 
@@ -37,7 +37,7 @@ export default function EventsRow({ events }: { events: EventItem[] }) {
                   </span>
                 )}
                 <h3 className="mt-3 font-display text-base font-semibold text-ink">{e.title}</h3>
-                <p className="mt-1 text-xs text-ink-muted">{e.date}</p>
+                <p className="mt-1 text-sm text-ink-muted">{e.date}</p>
               </div>
             </motion.div>
           ))}

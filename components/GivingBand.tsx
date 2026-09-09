@@ -6,7 +6,7 @@ export default function GivingBand() {
     <section className="bg-red-gradient py-16">
       <div className="container-content text-center">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-wide2 text-coral">Your generosity</p>
+          <p className="text-sm font-semibold uppercase tracking-wide2 text-coral">Your generosity</p>
           <h2 className="mx-auto mt-2 max-w-lg font-display text-3xl font-bold text-paper md:text-4xl">
             Give to make an impact
           </h2>
@@ -15,7 +15,7 @@ export default function GivingBand() {
           </p>
           <Link
             href="/give"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-semibold text-red-deep transition hover:bg-paper/90"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3 text-md font-semibold text-red-deep transition hover:bg-paper/90"
           >
             Give now
             <span aria-hidden="true">&rarr;</span>

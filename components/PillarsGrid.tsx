@@ -1,3 +1,4 @@
+"use client"
 import Reveal, { RevealGroup, revealItemVariants } from "./Reveal";
 import { motion } from "motion/react";
 
@@ -12,7 +13,7 @@ export default function PillarsGrid() {
   return (
     <div>
       <Reveal>
-        <p className="text-xs font-semibold uppercase tracking-wide2 text-red">Our foundation</p>
+        <p className="text-sm font-semibold uppercase tracking-wide2 text-red">Our foundation</p>
         <h2 className="mt-2 font-display text-2xl font-bold text-ink">Mission &amp; pillars</h2>
       </Reveal>
       <RevealGroup className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -27,8 +28,8 @@ export default function PillarsGrid() {
                 <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" />
               </svg>
             </div>
-            <p className="mt-3 font-display text-sm font-semibold text-ink">{p.label}</p>
-            <p className="mt-1 text-xs text-ink-muted">{p.blurb}</p>
+            <p className="mt-3 font-display text-md font-semibold text-ink">{p.label}</p>
+            <p className="mt-1 text-sm text-ink-muted">{p.blurb}</p>
           </motion.div>
         ))}
       </RevealGroup>

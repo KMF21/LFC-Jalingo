@@ -58,7 +58,7 @@ export default async function SermonDetailPage({ params }: Props) {
           {sermon.audioUrl ? (
             <AudioPlayer src={sermon.audioUrl} initialDuration={sermon.durationSeconds} />
           ) : (
-            <p className="rounded-2xl border border-ink/10 bg-paper-dim px-4 py-3 text-sm text-ink-muted">
+            <p className="rounded-2xl border border-ink/10 bg-paper-dim px-4 py-3 text-md text-ink-muted">
               Audio coming soon.
             </p>
           )}
@@ -80,7 +80,7 @@ export default async function SermonDetailPage({ params }: Props) {
               <a
                 href={sermon.audioUrl}
                 download
-                className="rounded-full border border-ink/15 px-4 py-2 text-xs font-semibold text-ink transition hover:border-red hover:text-red"
+                className="rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition hover:border-red hover:text-red"
               >
                 Download audio
               </a>
@@ -88,7 +88,7 @@ export default async function SermonDetailPage({ params }: Props) {
             {sermon.pdfUrl && (
               <a
                 href={sermon.pdfUrl}
-                className="rounded-full border border-ink/15 px-4 py-2 text-xs font-semibold text-ink transition hover:border-red hover:text-red"
+                className="rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition hover:border-red hover:text-red"
               >
                 Download PDF
               </a>
