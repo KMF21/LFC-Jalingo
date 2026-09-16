@@ -20,7 +20,7 @@ export default function FeatureRow({ title, accentWord, description, imageUrl, c
           reverse ? "md:flex-row-reverse" : ""
         }`}
       >
-        <div className="relative h-56 w-full shrink-0 bg-ink/10 md:h-auto md:w-2/5">
+        <div className="relative h-56 w-full shrink-0 bg-ink/10 md:h-auto md:min-h-[260px] md:w-2/5">
           {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
         </div>
         <div className="flex flex-1 flex-col justify-center p-7">

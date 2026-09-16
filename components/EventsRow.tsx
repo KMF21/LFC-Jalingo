@@ -27,7 +27,7 @@ export default function EventsRow({ events }: { events: EventItem[] }) {
               variants={revealItemVariants}
               className="overflow-hidden rounded-2xl border border-ink/10 bg-paper-dim"
             >
-              <div className="relative h-32 w-full bg-ink/10">
+              <div className="relative h-48 w-full bg-ink/10">
                 {e.imageUrl && <Image src={e.imageUrl} alt={e.title} fill className="object-cover" />}
               </div>
               <div className="p-5">

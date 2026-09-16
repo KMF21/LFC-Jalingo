@@ -57,7 +57,7 @@ export default async function MinistryDetailPage({ params }: Props) {
         <Reveal>
           <div className="grid grid-cols-3 gap-3">
             {gallery.slice(0, 3).map((url, i) => (
-              <div key={i} className="relative h-24 overflow-hidden rounded-xl bg-paper-dim">
+              <div key={i} className="relative h-40 overflow-hidden rounded-xl bg-paper-dim">
                 {url && <Image src={url} alt="" fill className="object-cover" />}
               </div>
             ))}

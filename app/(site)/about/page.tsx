@@ -143,7 +143,7 @@ export default async function AboutPage() {
           </p>
           <div className="grid grid-cols-3 gap-3">
             {outreachGallery.map((url, i) => (
-              <div key={i} className="relative h-20 overflow-hidden rounded-xl bg-paper-dim">
+              <div key={i} className="relative h-40 overflow-hidden rounded-xl bg-paper-dim">
                 {url && <Image src={url} alt="" fill className="object-cover" />}
               </div>
             ))}
