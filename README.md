@@ -84,17 +84,23 @@ Two things worth knowing before you build on top of this:
    `ministries/[slug]`) is already written as `async function` with
    `await params`. If you add more dynamic routes later, follow the same
    pattern or the build will error.
-2. **Sanity Studio is deployed separately, not embedded at `/studio`.**
-   This scaffold runs the Studio via `sanity dev` / `sanity deploy` from
-   `sanity.config.ts` at the project root, rather than mounting it inside
-   a Next.js App Router catch-all route. That's a deliberate choice, not
-   an oversight — as of mid-2026 there's a known issue where Studio
-   embedded inside a Next.js 16 App Router project (via `next-sanity`'s
-   `NextStudio`) can 500 in Vercel production specifically, due to a
-   jsdom/parse5 ESM conflict pulled in by `@sanity/vision`. Keeping the
-   Studio as its own deployment sidesteps that entirely. If you later want
-   an embedded `/studio` route for convenience, check the current status
-   of that issue first.
+2. **Sanity Studio runs as a standalone deployment, not embedded at
+   `/studio`.** This has flip-flopped once already in this document's
+   history, so here's the final state and why: Studio was briefly embedded
+   at `app/studio/[[...tool]]/` using the raw `Studio` component, which
+   surfaced two separate real build failures — first a known
+   `@sanity/vision` jsdom/parse5 conflict (addressed by dropping
+   `visionTool`), then an "Unknown module type" Turbopack error from
+   `@sanity/workbench` (pulled in by `structureTool` itself, not
+   removable the same way). That's not one unlucky package, it's a
+   pattern: Sanity Studio v6 is built for Vite, and Next.js's bundler
+   wasn't designed to bundle its internals. The embedded route has been
+   removed. Studio now runs only via the standalone CLI —
+   `npx sanity dev` for local editing, `npx sanity deploy` to publish it
+   to its own `*.sanity.studio` URL — using `sanity.config.ts` at the
+   project root, which Vite handles natively with none of these issues.
+   `visionTool` is safe to re-add in that standalone context specifically,
+   since the risk was Next.js bundling it, not Sanity Studio running it.
 3. **If you later add Sanity's live-preview (`<SanityLive>`)**, be aware
    Sanity's own docs flagged a request-volume issue when combining it with
    Next.js 16's default link-prefetch behavior (each prefetch can cascade
@@ -110,23 +116,43 @@ MP3 files live in **Cloudflare R2** and stream from R2's CDN — R2's free
 egress is the whole point here, since it's what keeps costs near-zero even
 if the sermon library gets shared widely.
 
+**Transcoding happens in the browser, not on the server — this changed.**
+The original design ran ffmpeg server-side via `ffmpeg-static` +
+`fluent-ffmpeg`, but that hit two separate real, blocking failures in
+practice: pnpm's build-script approval blocking the binary download on
+Windows, and — more importantly — no guarantee that whatever binary
+worked in local dev would also work in Vercel's Linux serverless runtime.
+That's not one unlucky package, it's the same pattern that broke the
+embedded Sanity Studio route (see below): native, platform-specific
+binaries are a bad fit for Next.js's build/runtime model. Rather than keep
+patching around it, transcoding was moved to run via **ffmpeg.wasm**
+entirely client-side, in the admin's browser tab, before the file is ever
+uploaded — eliminating the native-binary dependency altogether, in dev and
+in production, on every OS, permanently.
+
 **How it fits together:**
 
-- `lib/r2.ts` — the R2 client (S3-compatible SDK) and `uploadSermonAudio()`,
-  which writes to `sermons/{year}/{slug}.mp3` and returns the public CDN URL.
-- `lib/transcode.ts` — `transcodeToMp3()`, which normalizes whatever format
-  staff upload down to 96kbps mono MP3 using a bundled ffmpeg binary
-  (`ffmpeg-static`) — the main lever on both storage size and bandwidth.
-- `app/api/admin/upload-sermon/route.ts` — the Node.js (not Edge — ffmpeg
-  needs a real binary) API route that ties transcode + upload together and
-  hands back the CDN URL.
-- `app/admin/upload-sermon/page.tsx` — the actual non-technical flow: staff
-  pick a file, type a slug, click Upload, get a link back to paste into the
-  sermon's Audio URL field in Sanity Studio. No R2 dashboard, no manual
-  ffmpeg command.
-- `components/AudioPlayer.tsx` — a thin wrapper around the native
-  `<audio>` element. Browsers already support range-request streaming and
-  seeking against a plain CDN URL, so no separate player library is needed.
+- `public/ffmpeg/ffmpeg-core.js` + `ffmpeg-core.wasm` — the actual
+  ffmpeg.wasm core (single-threaded build — deliberately not the
+  multi-threaded variant, which would require COOP/COEP cross-origin
+  isolation headers on the whole site just for this one admin page),
+  self-hosted here rather than pulled from a third-party CDN at runtime,
+  so this tool doesn't depend on an external service being up. ~31MB;
+  that's fine as a one-time download on an occasional-use admin page, not
+  something to add to a public-facing route.
+- `app/admin/upload-sermon/page.tsx` — loads ffmpeg.wasm on demand, runs
+  the same 96kbps mono MP3 conversion the old server-side step did, shows
+  live progress, then uploads the already-compressed file. Staff still
+  just pick a file, type a slug, click Upload — the compression step is
+  invisible to them beyond a progress indicator.
+- `app/api/admin/upload-sermon/route.ts` — much simpler now: checks the
+  `x-admin-secret` header, then hands the (already-compressed) bytes
+  straight to `uploadSermonAudio()`. No transcoding, no native binary, no
+  particular runtime requirement beyond what the R2 SDK itself needs.
+- `lib/r2.ts` — unchanged — the R2 client and `uploadSermonAudio()`, which
+  writes to `sermons/{year}/{slug}.mp3` and returns the public CDN URL.
+- `components/AudioPlayer.tsx` — unchanged — a thin wrapper around the
+  native `<audio>` element for range-request streaming/seeking.
 
 **Before this works in production:**
 
@@ -136,10 +162,8 @@ if the sermon library gets shared widely.
 2. Generate R2 API credentials and drop them into `.env.local`
    (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`,
    `R2_PUBLIC_URL`) — see `.env.example`.
-3. **Put real auth on `/admin/upload-sermon` and its API route** — both are
-   unauthenticated in this scaffold (flagged with `TODO`s in each file). A
-   shared-secret header checked in the API route is enough for a small
-   church admin team; full user accounts are likely overkill here.
+3. Set `ADMIN_UPLOAD_SECRET` — the upload page and its API route already
+   enforce this (fails closed if unset), it just needs a real value.
 4. Sermons stay public-read by design (freely-given ministry content) —
    keep this distinct from `/resources`, where paid PDFs need real access
    control tied to payment status. Don't apply R2's public-bucket pattern
@@ -390,3 +414,94 @@ the exact query from `sanity/lib/queries.ts` (e.g. `PASTOR_WELCOME_QUERY`)
 issue is in the app's fetch wiring. If it returns nothing, the problem is
 in Studio (draft vs. published, or wrong field) — `scripts/check-sanity.mjs`
 is the command-line equivalent of the same check.
+
+## Repo audit fixes (this pass)
+
+Pulled the actual repo via `codeload.github.com` (GitHub's zip-download
+endpoint) rather than working from README prose, and found/fixed:
+
+- **Deleted `app/(site)/about/upload-sermon/page.tsx`** — a duplicate of
+  `app/admin/upload-sermon/page.tsx`, byte-for-byte, but nested under
+  About instead of Admin. This meant the sermon-upload tool was reachable
+  at an unintended, publicly-discoverable `/about/upload-sermon` URL in
+  addition to the real one. The real one at `/admin/upload-sermon` is
+  untouched and still fully functional.
+- **Removed `visionTool()`** from `sanity.config.ts` and dropped the
+  `@sanity/vision` dependency, then **removed the embedded `/studio`
+  route entirely** (`app/studio/`) after it produced a second real build
+  failure — Turbopack's "Unknown module type" on `@sanity/workbench` — on
+  top of the jsdom/parse5 risk `visionTool` alone didn't fully address.
+  Studio now runs only via the standalone CLI; see the Versions section
+  above for the full explanation.
+- **Deleted confirmed-dead files**: `lib/sanity.ts` (fully superseded by
+  `sanity/lib/*`, grepped and confirmed unused anywhere), the empty
+  default-stub `sanity/schemaTypes/` folder (real schemas load from
+  `sanity/schemas/`, also confirmed via `sanity.config.ts`'s actual
+  import), `components/MinistryCard.tsx` and `components/ServiceCard.tsx`
+  (both confirmed unreferenced — superseded by `FeatureRow` and
+  `ServiceTimesGrid`), and a stray 0-byte temp file that had been
+  accidentally committed at repo root.
+- **Confirmed, did not need to change:** `/admin/upload-sermon` and its
+  API route already have real auth — an `x-admin-secret` header checked
+  against `ADMIN_UPLOAD_SECRET`, failing closed (rejects everyone) if the
+  env var isn't set, rather than failing open. This was already correctly
+  implemented, not just a TODO.
+
+## R2 setup progress + the transcoding pivot
+
+**Update since this section was written:** the R2 bucket
+(`lfc-jalingo-sermons`) has been created via the Cloudflare Developer
+Platform connector and confirmed live. Public access + custom domain
+(`R2_PUBLIC_URL`) and API credentials (`R2_ACCOUNT_ID`,
+`R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`) have all been generated and
+are set in `.env.local` — same reminder as always: mirror them into your
+hosting provider's environment variables too, or they won't reach
+production.
+
+**Also since this section was written:** server-side transcoding
+(`ffmpeg-static` + `fluent-ffmpeg`, `lib/transcode.ts`) was replaced
+entirely by client-side transcoding via ffmpeg.wasm, after it caused real
+build/runtime failures that a native binary dependency was always at risk
+of hitting differently in dev vs. production. See the "Sermon audio"
+section above for the full explanation — `lib/transcode.ts` no longer
+exists.
+
+Remaining before this is fully production-ready:
+
+1. **Test end-to-end.** Run `pnpm dev`, visit `/admin/upload-sermon`,
+   enter `ADMIN_UPLOAD_SECRET`, upload a short test audio file, confirm it
+   returns a real `pub-....r2.dev/sermons/...` (or your custom domain) URL,
+   and confirm that URL actually plays in a browser.
+2. **Mirror all env vars into production hosting** (Vercel etc.) — the
+   five `R2_*` vars plus `ADMIN_UPLOAD_SECRET`, not just `.env.local`.
+3. Optional hardening for later: real admin auth beyond the shared secret
+   if the admin team grows past one or two trusted people.
+
+The original numbered setup steps below are kept for reference / to
+re-run if the bucket or credentials ever need regenerating from scratch.
+
+Code-side, this is already fully wired (`lib/r2.ts`, the upload route +
+page, the confirmed auth) — what's left is entirely Cloudflare-dashboard
+work only the site owner can do:
+
+1. **Create the R2 bucket.** Cloudflare dashboard → R2 → Create bucket →
+   name it `lfc-jalingo-sermons` (matching `R2_BUCKET` in `.env.example`)
+   or update the env var to match whatever name you choose.
+2. **Enable public read access** on the bucket and point a custom domain
+   at it (e.g. `sermons.lfcjalingo.org`) — R2 → the bucket → Settings →
+   Public Access. This becomes `R2_PUBLIC_URL`.
+3. **Generate R2 API credentials.** Cloudflare dashboard → R2 → Manage R2
+   API Tokens → Create API Token, with read+write permissions scoped to
+   this bucket. This gives you the Account ID, Access Key ID, and Secret
+   Access Key for `R2_ACCOUNT_ID` / `R2_ACCESS_KEY_ID` /
+   `R2_SECRET_ACCESS_KEY`.
+4. **Set all five R2_* variables** in `.env.local` for local testing, AND
+   in your hosting provider's environment variables (Vercel etc.) for
+   production — same rule as the Sanity project ID: a value only in
+   `.env.local` never reaches a deployed site.
+5. **Generate `ADMIN_UPLOAD_SECRET`** too, if not already set — any long
+   random string (`openssl rand -hex 32`), shared only with whoever
+   manages sermon uploads.
+6. Test end-to-end: visit `/admin/upload-sermon`, enter the secret, upload
+   a short test audio file, confirm it returns a real CDN URL, and confirm
+   that URL actually plays in a browser.

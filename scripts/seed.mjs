@@ -41,17 +41,12 @@
  * commit it.
  */
 import { createClient } from "@sanity/client";
-import { readFileSync, existsSync, createReadStream } from "fs";
+import { existsSync, createReadStream } from "fs";
+import { config as loadEnv } from "dotenv";
 
-function loadEnvLocal() {
-  if (!existsSync(".env.local")) return;
-  const lines = readFileSync(".env.local", "utf8").split("\n");
-  for (const line of lines) {
-    const match = line.match(/^([A-Z_]+)=(.*)$/);
-    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].trim();
-  }
-}
-loadEnvLocal();
+// Same fix as scripts/check-sanity.mjs — a real .env parser instead of a
+// hand-rolled regex that didn't tolerate spaces around `=` or quoted values.
+loadEnv({ path: ".env.local" });
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";

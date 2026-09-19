@@ -1,25 +1,32 @@
 import ffmpegPath from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
 import { mkdtemp, readFile, rm, writeFile } from "fs/promises";
+import { existsSync } from "fs";
 import { tmpdir } from "os";
 import path from "path";
 
-if (ffmpegPath) {
-  ffmpeg.setFfmpegPath(ffmpegPath);
+const bundledFfmpegAvailable = Boolean(ffmpegPath && existsSync(ffmpegPath));
+if (bundledFfmpegAvailable) {
+  ffmpeg.setFfmpegPath(ffmpegPath as string);
 }
 
-/**
- * Transcodes a raw uploaded audio buffer (whatever format church staff
- * happen to upload — WAV, M4A, high-bitrate MP3 from a recorder, etc.)
- * down to 96kbps mono-friendly MP3. This is the single biggest lever on
- * both storage size and R2 egress-adjacent costs (transfer, not R2 itself,
- * since R2 egress is free) as the library grows.
- *
- * Runs via ffmpeg-static, a bundled ffmpeg binary — works in a standard
- * Next.js Node.js serverless function (NOT the Edge runtime, which can't
- * run native binaries). The API route that calls this must declare
- * `export const runtime = "nodejs"`.
- */
+function ffmpegNotFoundError(): Error {
+  return new Error(
+    `No usable ffmpeg found. Tried the bundled ffmpeg-static binary at ` +
+      `"${ffmpegPath}" (missing — its postinstall script likely never ran, ` +
+      `a known pnpm behavior, not a bug in this code) and a system-installed ` +
+      `\`ffmpeg\` on PATH (not found either). Fix either one: ` +
+      `(1) run \`pnpm approve-builds\`, confirm ffmpeg-static is actually ` +
+      `selected/checked in the list (not just listed), press enter to ` +
+      `confirm, then delete node_modules and run \`pnpm install\` again — ` +
+      `approving alone doesn't retroactively fix an already-installed copy, ` +
+      `it only takes effect on the next install; or ` +
+      `(2) install ffmpeg system-wide instead: \`winget install ffmpeg\` on ` +
+      `Windows, \`brew install ffmpeg\` on macOS, \`apt install ffmpeg\` on ` +
+      `Linux — then restart the dev server so it picks up the updated PATH.`
+  );
+}
+
 export async function transcodeToMp3(inputBuffer: Buffer): Promise<Buffer> {
   const workDir = await mkdtemp(path.join(tmpdir(), "sermon-"));
   const inputPath = path.join(workDir, "input");
@@ -32,10 +39,16 @@ export async function transcodeToMp3(inputBuffer: Buffer): Promise<Buffer> {
       ffmpeg(inputPath)
         .audioCodec("libmp3lame")
         .audioBitrate("96k")
-        .audioChannels(1) // mono is fine, often preferable, for spoken word
+        .audioChannels(1)
         .format("mp3")
         .on("end", () => resolve())
-        .on("error", (err) => reject(err))
+        .on("error", (err: any) => {
+          if (err?.code === "ENOENT" || /ENOENT/.test(String(err?.message))) {
+            reject(ffmpegNotFoundError());
+          } else {
+            reject(err);
+          }
+        })
         .save(outputPath);
     });
 
