@@ -79,12 +79,6 @@ async function attachImageIfPresent(localPath) {
 const LEADERS = [
   { _id: "leader-jesse-dazema", name: "Pst Jesse Dazema", role: "State Pastor, Taraba", order: 1,
     bio: "Pst Jesse Dazema leads Living Faith Church across Taraba State, shepherding the church family in Jalingo with a heart for discipleship and community impact.",
-    // Obvious placeholder, not a drafted quote — this field renders
-    // directly on the public homepage attributed to his name (see
-    // components/PastorWelcome.tsx), so it must stay unmistakably a
-    // placeholder until he writes and approves the real text, not
-    // something that could pass as his actual words if the site ships
-    // before it's swapped out.
     welcomeMessage: "[PLACEHOLDER — REPLACE BEFORE PUBLISHING. Ask Pst Jesse Dazema for his actual welcome message, in his own words, then paste it here and delete this bracketed text.]",
     imagePath: "public/images/leaders/jesse-dazema.jpg" },
   { _id: "leader-sunday-ushie", name: "Pst Sunday Ushie", role: "State Youth Pastor", order: 2,
@@ -97,11 +91,6 @@ const LEADERS = [
     imagePath: "public/images/leaders/lucy-dazema.jpg" },
 ];
 
-// Same copy already used as the homepage's hardcoded fallback (see
-// app/page.tsx) — seeding it here just moves it from code into Sanity so
-// it becomes editable in Studio. Image paths match the paths that
-// fallback already references (/images/... -> public/images/...); if your
-// real files use different names, update imagePath below to match.
 const HERO_SLIDES = [
   { _id: "hero-slide-1", order: 1,
     title: "Welcome to Living Faith", accentWord: "Church, Jalingo",
@@ -119,16 +108,43 @@ const MINISTRIES = [
   { _id: "ministry-youth-alive", name: "Youth Alive Fellowship", slug: "youth-alive", order: 1,
     description: "Empowering young people in faith, purpose, and community — through weekly fellowship, outreach, and mentorship.",
     imagePath: "public/images/ministries/youth-alive.jpg" },
-  { _id: "ministry-music", name: "Music Ministry", slug: "music", order: 2,
-    description: "Leading the congregation in praise and worship, and raising up musicians and singers for the house of God.",
+  { _id: "ministry-music", name: "Choir / Music Department", slug: "music", order: 2,
+    description: "Leads the congregation in praise, worship, and special ministration during services.",
     imagePath: "public/images/ministries/music.jpg" },
-  { _id: "ministry-ushering", name: "Ushering", slug: "ushering", order: 3,
-    description: "Serving members and visitors with warmth and order, from the car park to the auditorium.",
+  { _id: "ministry-ushering", name: "Ushering / Hospitality Unit", slug: "ushering", order: 3,
+    description: "Welcomes worshippers, manages seating, and attends to the congregation with warmth and courtesy.",
     imagePath: "public/images/ministries/ushering.jpg" },
   { _id: "ministry-prayer-band", name: "Prayer Band", slug: "prayer-band", order: 4,
     description: "Standing in intercession for the church, the community, and the nation.",
     imagePath: "public/images/ministries/prayer-band.jpg" },
-  { _id: "ministry-outreach", name: "Outreach & Community Impact", slug: "outreach", order: 5,
+  { _id: "ministry-crowd-control", name: "Crowd Control / Safety Unit", slug: "crowd-control", order: 5,
+    description: "Coordinates orderly movement, parking, and general safety within and around the church premises.",
+    imagePath: "public/images/ministries/crowd-control.jpg" },
+  { _id: "ministry-sanctuary-keepers", name: "Sanctuary Keepers", slug: "sanctuary-keepers", order: 6,
+    description: "Maintains the cleanliness and general upkeep of the auditorium and church facilities.",
+    imagePath: "public/images/ministries/sanctuary-keepers.jpg" },
+  { _id: "ministry-technical", name: "Technical and Multimedia Department", slug: "technical", order: 7,
+    description: "Handles sound, livestreaming, projection, lighting, and recording for every service and program.",
+    imagePath: "public/images/ministries/technical.jpg" },
+  { _id: "ministry-medical", name: "Medical / First Aid Unit", slug: "medical", order: 8,
+    description: "Provides immediate medical support and responds to emergencies during services and church programs.",
+    imagePath: "public/images/ministries/medical.jpg" },
+  { _id: "ministry-protocol", name: "Protocol and Security Unit", slug: "protocol", order: 9,
+    description: "Coordinates guest ministers, VIP arrangements, and overall safety within the church environment.",
+    imagePath: "public/images/ministries/protocol.jpg" },
+  { _id: "ministry-visitation", name: "Visitation and Follow-Up / Assimilation Unit", slug: "visitation", order: 10,
+    description: "Follows up with new converts and first-time worshippers, helping them settle in and grow in the faith.",
+    imagePath: "public/images/ministries/visitation.jpg" },
+  { _id: "ministry-evangelism", name: "Evangelism Unit", slug: "evangelism", order: 11,
+    description: "Organizes outreach programs and neighborhood evangelism, carrying the gospel beyond the church walls.",
+    imagePath: "public/images/ministries/evangelism.jpg" },
+  { _id: "ministry-children-teens", name: "Children and Teenagers Church Department", slug: "children-teens", order: 12,
+    description: "Nurtures the spiritual, social, and educational foundation of children and teenagers with age-appropriate teaching.",
+    imagePath: "public/images/ministries/children-teens.jpg" },
+  { _id: "ministry-wofbi", name: "Word Faith Bible Institute (WOFBI) / Believers' Foundation Class", slug: "wofbi", order: 13,
+    description: "Runs foundational membership classes, water baptism preparation, and leadership training.",
+    imagePath: "public/images/ministries/wofbi.jpg" },
+  { _id: "ministry-outreach", name: "Outreach & Community Impact", slug: "outreach", order: 14,
     description: "Grain distribution, medical outreach, and community walks across Jalingo — reaching our city with practical love.",
     imagePath: "public/images/ministries/outreach.jpg" },
 ];
@@ -142,8 +158,6 @@ const SITE_SETTINGS = {
     { _type: "object", _key: "s2", label: "2nd Service", time: "9:00 AM", note: "Interpreted in Hausa" },
     { _type: "object", _key: "s3", label: "Midweek Service", time: "Wed · 5:00 PM" },
   ],
-  // facebookUrl, whatsappUrl, paystackPublicKey intentionally left unset —
-  // real business details, add by hand in Studio.
 };
 
 async function run() {
@@ -209,9 +223,6 @@ async function run() {
 
   console.log("\nSeed complete. Run `node scripts/check-sanity.mjs` to confirm document");
   console.log("counts, then reload the site — text content should now be live.");
-  console.log("Anything logged above as 'no image found' (or 'skipping' for a hero");
-  console.log("slide) still needs a real photo at that path, either dropped into");
-  console.log("public/images and re-run, or uploaded directly in Studio.");
 }
 
 run().catch((err) => {
