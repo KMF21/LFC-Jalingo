@@ -1,3 +1,4 @@
+// app/(site)/resources/[slug]/page.tsx
 import PageHero from "@/components/PageHero";
 import PaystackButton from "@/components/PaystackButton";
 import BankAccountsList, { BankAccount } from "@/components/BankAccountsList";
@@ -5,7 +6,6 @@ import Reveal from "@/components/Reveal";
 import { safeSanityFetch, safeSanityFetchOne } from "@/sanity/lib/safe-fetch";
 import { RESOURCE_BY_SLUG_QUERY, BANK_ACCOUNTS_QUERY } from "@/sanity/lib/queries";
 
-// Next.js 15+ made dynamic route params async — must be awaited.
 type Props = { params: Promise<{ slug: string }> };
 
 type ResourceDetail = {
@@ -17,13 +17,29 @@ type ResourceDetail = {
   fileUrl?: string;
 };
 
-const fallbackResource: ResourceDetail = {
-  title: "The Miracle Seed",
-  category: "Book",
-  description: "A foundational teaching on faith and giving.",
-  isFree: false,
-  price: 1500,
-  fileUrl: "#",
+const FALLBACK_RESOURCES: Record<string, ResourceDetail> = {
+  "the-miracle-seed": {
+    title: "The Miracle Seed",
+    category: "Book",
+    description: "A foundational teaching on faith and giving.",
+    isFree: false,
+    price: 1500,
+    fileUrl: "#",
+  },
+  "word-of-the-week": {
+    title: "Word of the Week — Consecration",
+    category: "Devotional",
+    description: "A short weekly devotional on living a consecrated life.",
+    isFree: true,
+    fileUrl: "#",
+  },
+  "prayer-guidelines": {
+    title: "Prayer Guidelines",
+    category: "Teaching Guide",
+    description: "A simple guide to structuring personal and corporate prayer.",
+    isFree: true,
+    fileUrl: "#",
+  },
 };
 
 const fallbackBankAccounts: BankAccount[] = [
@@ -33,7 +49,8 @@ const fallbackBankAccounts: BankAccount[] = [
 
 async function getResource(slug: string): Promise<ResourceDetail> {
   const data = await safeSanityFetchOne<ResourceDetail>(RESOURCE_BY_SLUG_QUERY, { slug });
-  return data ?? fallbackResource;
+  if (data) return data;
+  return FALLBACK_RESOURCES[slug] ?? FALLBACK_RESOURCES["the-miracle-seed"];
 }
 
 export default async function ResourceDetailPage({ params }: Props) {
@@ -46,7 +63,6 @@ export default async function ResourceDetailPage({ params }: Props) {
   return (
     <main>
       <PageHero eyebrow={resource.category} title={resource.title} description={resource.description} />
-
       <section className="container-content max-w-lg pb-16">
         {resource.isFree ? (
           <Reveal>
