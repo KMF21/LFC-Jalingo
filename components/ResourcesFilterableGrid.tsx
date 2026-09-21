@@ -1,4 +1,3 @@
-// components/ResourcesFilterableGrid.tsx
 "use client";
 
 import { useState } from "react";
@@ -38,7 +37,7 @@ export default function ResourcesFilterableGrid({ resources }: { resources: Reso
       </div>
 
       {visible.length > 0 ? (
-        <div className="mt-8 grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {visible.map((r) => (
             <ResourceCard key={r.slug} resource={r} />
           ))}

@@ -39,7 +39,8 @@ export const RESOURCES_LIST_QUERY = `*[_type == "resource"] | order(_createdAt d
   title,
   category,
   isFree,
-  price
+  price,
+  "coverImageUrl": coverImage.asset->url
 }`;
 
 export const MINISTRIES_LIST_QUERY = `*[_type == "ministry"] | order(order asc){
@@ -130,7 +131,8 @@ export const RESOURCE_BY_SLUG_QUERY = `*[_type == "resource" && slug.current == 
   description,
   isFree,
   price,
-  "fileUrl": file.asset->url
+  "fileUrl": file.asset->url,
+  "coverImageUrl": coverImage.asset->url
 }`;
 
 export const MINISTRY_BY_SLUG_QUERY = `*[_type == "ministry" && slug.current == $slug][0]{
