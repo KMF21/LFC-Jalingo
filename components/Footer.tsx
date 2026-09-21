@@ -1,5 +1,4 @@
 import Link from "next/link";
-import FlameMark from "./FlameMark";
 import Reveal from "./Reveal";
 import type { ServiceTime } from "@/sanity/lib/queries";
 import Image from "next/image";
@@ -13,12 +12,14 @@ const quickLinks = [
   { href: "/contact", label: "Contact Us" },
 ];
 
+// A representative handful, not the full 14 — kept short on purpose for a
+// footer column. The Ministries page itself lists all of them.
 const ministries = [
   { href: "/ministries/youth-alive", label: "Youth Alive Fellowship" },
-  { href: "/ministries/music", label: "Music Ministry" },
-  { href: "/ministries/ushering", label: "Ushering" },
+  { href: "/ministries/music", label: "Choir / Music Department" },
+  { href: "/ministries/ushering", label: "Ushering / Hospitality Unit" },
   { href: "/ministries/prayer-band", label: "Prayer Band" },
-  { href: "/ministries/outreach", label: "Outreach & Community" },
+  { href: "/ministries/outreach", label: "Outreach & Community Impact" },
 ];
 
 type FooterProps = {
@@ -78,6 +79,11 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/ministries" className="font-semibold text-coral transition hover:text-paper">
+                View all ministries &rarr;
+              </Link>
+            </li>
           </ul>
         </Reveal>
 
@@ -98,6 +104,16 @@ export default function Footer({ address, serviceTimes, facebookUrl, whatsappUrl
         <div className="container-content flex flex-col gap-2 py-5 text-sm sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} Living Faith Church, Jalingo</span>
           <span>Part of Living Faith Church Worldwide</span>
+        </div>
+        <div className="container-content flex justify-center pb-5 text-xs text-paper/40 sm:justify-start">
+          <a
+            href="https://www.kmfenterprise.ng/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition hover:text-coral"
+          >
+            Built and managed by KMFenterprise
+          </a>
         </div>
       </div>
     </footer>
