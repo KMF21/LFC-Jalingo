@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { transcodeToMp3 } from "@/lib/transcode";
 import { uploadSermonAudio } from "@/lib/r2";
 
-// Must run on the Node.js runtime, not Edge — ffmpeg-static ships a native
-// binary that Edge functions can't execute.
+// No longer needs the Node.js runtime specifically for a native binary's
+// sake — transcoding now happens client-side via ffmpeg.wasm before the
+// file ever reaches this route (see app/admin/upload-sermon/page.tsx and
+// the "Sermon audio" README section for why). Kept on nodejs anyway since
+// the R2 upload SDK expects Node's Buffer/stream APIs, not because of
+// ffmpeg.
 export const runtime = "nodejs";
 
 function isAuthorized(req: NextRequest): boolean {
@@ -35,18 +38,19 @@ export async function POST(req: NextRequest) {
 
     const year = typeof yearRaw === "string" && yearRaw ? parseInt(yearRaw, 10) : new Date().getFullYear();
 
-    const rawBuffer = Buffer.from(await file.arrayBuffer());
-    const mp3Buffer = await transcodeToMp3(rawBuffer);
+    // The file arriving here is already a compressed MP3 — transcoding
+    // happened client-side (see the page component). This route's only
+    // job now is authorization plus handing the bytes to R2.
+    const mp3Buffer = Buffer.from(await file.arrayBuffer());
     const audioUrl = await uploadSermonAudio({ buffer: mp3Buffer, year, slug });
 
     return NextResponse.json({
       audioUrl,
-      originalSizeBytes: rawBuffer.byteLength,
-      transcodedSizeBytes: mp3Buffer.byteLength,
+      sizeBytes: mp3Buffer.byteLength,
       note: "Paste this audioUrl into the sermon's 'Audio URL (R2 / CDN)' field in Sanity Studio.",
     });
   } catch (err) {
     console.error("Sermon upload failed:", err);
-    return NextResponse.json({ error: "Upload/transcode failed" }, { status: 500 });
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

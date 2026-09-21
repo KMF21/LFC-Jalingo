@@ -16,18 +16,25 @@
  * uses, so this checks the exact config the site is actually running with.
  */
 import { createClient } from "@sanity/client";
-import { readFileSync, existsSync } from "fs";
+import { config as loadEnv } from "dotenv";
 
-function loadEnvLocal() {
-  if (!existsSync(".env.local")) return;
-  const lines = readFileSync(".env.local", "utf8").split("\n");
-  for (const line of lines) {
-    const match = line.match(/^([A-Z_]+)=(.*)$/);
-    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].trim();
-  }
+// Using the real `dotenv` package rather than a hand-rolled parser —
+// an earlier version of this script parsed .env.local with a regex that
+// didn't tolerate spaces around `=`, quoted values, or other things a
+// normal .env file often has. dotenv handles all of that correctly.
+const envResult = loadEnv({ path: ".env.local" });
+
+console.log("--- .env.local file check ---");
+if (envResult.error) {
+  console.log("Could not read .env.local:", envResult.error.message);
+  console.log("Most common cause on Windows: the file is actually named");
+  console.log(".env.local.txt (Explorer hides known extensions by default).");
+  console.log("Check with: Get-ChildItem -Force .env.local*");
+} else {
+  const keys = Object.keys(envResult.parsed || {});
+  console.log(`Found .env.local — parsed ${keys.length} variable(s): ${keys.join(", ") || "(none)"}`);
 }
-
-loadEnvLocal();
+console.log("");
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
