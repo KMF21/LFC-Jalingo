@@ -68,8 +68,11 @@ export default function UploadSermonPage() {
         "-b:a", "96k",
         "output.mp3",
       ]);
-      const outputData = await ffmpeg.readFile("output.mp3");
-      const mp3Blob = new Blob([outputData], { type: "audio/mpeg" });
+const outputData = await ffmpeg.readFile("output.mp3");
+if (typeof outputData === "string") {
+  throw new Error("Unexpected text output from ffmpeg — expected binary MP3 data");
+}
+const mp3Blob = new Blob([Uint8Array.from(outputData)], { type: "audio/mpeg" });
 
       // 2. Upload the already-compressed file — the API route no longer
       //    does any transcoding itself, just an R2 upload.
