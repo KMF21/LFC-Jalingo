@@ -88,7 +88,7 @@ export default async function AboutPage() {
       </section>
 
       <section className="container-content max-w-2xl pb-16">
-        {/* <PillarsGrid /> */}
+        <PillarsGrid />
       </section>
 
       <FounderSection />
