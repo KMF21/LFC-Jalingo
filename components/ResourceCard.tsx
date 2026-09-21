@@ -23,7 +23,7 @@ export default function ResourceCard({ resource }: { resource: ResourceListItem 
             alt={resource.title}
             fill
             className="object-cover"
-            sizes="(max-width: 640px) 50vw, 33vw"
+           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
           />
         ) : (
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
