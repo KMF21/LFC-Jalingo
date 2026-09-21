@@ -6,8 +6,7 @@ import { safeSanityFetch } from "@/sanity/lib/safe-fetch";
 import { BANK_ACCOUNTS_QUERY } from "@/sanity/lib/queries";
 
 const fallbackBankAccounts: BankAccount[] = [
-  { bankName: "GTBank", accountName: "Living Faith Church Jalingo", accountNumber: "0123456789", label: "General account" },
-  { bankName: "Zenith Bank", accountName: "Living Faith Church Jalingo", accountNumber: "9876543210", label: "Building fund" },
+  { bankName: "Zenith Bank", accountName: "Living Faith Church Jalingo", accountNumber: "1016168812", label: "General Account" },
 ];
 
 export default async function GivePage() {
@@ -30,11 +29,11 @@ export default async function GivePage() {
               <p className="mt-2 font-display text-2xl font-bold text-paper">Every seed counts</p>
             </div>
             <div className="space-y-6 bg-paper-dim p-6">
-              <PaystackButton
+              {/* <PaystackButton
                 amountNaira={5000}
                 email="member@example.com"
                 reference={`giving-${Date.now()}`}
-              />
+              /> */}
               <div className="flex items-center gap-3 text-sm text-ink-muted">
                 <span className="h-px flex-1 bg-ink/10" />
                 or
